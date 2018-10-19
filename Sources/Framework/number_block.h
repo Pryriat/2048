@@ -1,3 +1,6 @@
+/*
+@autor zhangab
+*/
 #ifndef NUMBER_BLOCK_H_INCLUDED
 #define NUMBER_BLOCK_H_INCLUDED
 
@@ -6,7 +9,7 @@
 class number_block {
   public :
     number_block() {}
-    // 生成数字,未实现根据难度调节数字,有待修正
+    // 生成数字2,4,8,未实现根据难度调节数字,有待修正
     unsigned int generate_number(int difficulty) {
         return 1 << (rand() % 3 + 1);
     }
