@@ -13,13 +13,13 @@ bool framework::end_judge(number_block* moving_block)
 	unsigned int current_x = moving_block->get_x();
 	unsigned int current_y = moving_block->get_y();
 
-	//³¬³öÉÏ½çÅĞ¶Ï
+	//è¶…å‡ºä¸Šç•Œåˆ¤æ–­
 	if ((this->game_blocks[current_x][current_y - 1].is_none == false) && current_y == column - 1)
 	{
 		return true;
 	}
 
-	//ÌîÂú¿Õ¸ñÅĞ¶Ï
+	//å¡«æ»¡ç©ºæ ¼åˆ¤æ–­
 	for (current_y = 0; current_y < row; ++current_y)
 	{
 		for (current_x = 0; current_x < column; ++current_x)
@@ -42,9 +42,9 @@ void framework::control(unsigned char control_flag, number_block* moving_block)
 	unsigned int current_y = moving_block->get_y();
 	switch (control_flag)
 	{
-		case 75://·½Ïò×ó
+		case 75://æ–¹å‘å·¦
 		{
-			if (!this->game_blocks[current_y][current_x - 1].is_none)//×ó²à¿é²»Îª¿Õ
+			if (!this->game_blocks[current_y][current_x - 1].is_none)//å·¦ä¾§å—ä¸ä¸ºç©º
 			{
 				return;
 			}
