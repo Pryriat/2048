@@ -116,7 +116,7 @@
 ## 将团队的任务计划添加到码云(Github)的团队项目issues里面(Done)
 
 ## 提供issue截图(Done)
-[](https://github.com/Pryriat/2048/blob/master/image/issues.png)
+[](https://raw.githubusercontent.com/Pryriat/2048/master/image/issues.png)
 
 ## 给出团队项目的时间安排表(Todo)
 
