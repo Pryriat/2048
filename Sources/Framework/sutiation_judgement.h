@@ -8,6 +8,8 @@ Ver:Alpha
 #define SUTIATION_JUDGEMENT_H_INCLUDED
 
 #include"framework_base.h"
+
+
 bool framework::end_judge(number_block* moving_block)
 {
     unsigned int current_x = moving_block->get_x();
@@ -65,29 +67,62 @@ void framework::control(unsigned char control_flag, number_block* moving_block)
     {
         if (current_x == this->column - 1)
             return;
-        if (!this->game_blocks[current_y][current_x + 1].is_none || this->game_blocks[current_y][current_x + 1].is_uncombined)
+        else if (!this->game_blocks[current_y][current_x + 1].is_none || this->game_blocks[current_y][current_x + 1].is_uncombined)
         {//右侧块不为空或为障碍块
             return;
         }
-        game_blocks[current_y][current_x].is_none = true;
-        game_blocks[current_y][current_x + 1].is_none = false;
-        game_blocks[current_y][current_x + 1].block = moving_block;
+        this->game_blocks[current_y][current_x].is_none = true;
+        this->game_blocks[current_y][current_x + 1].is_none = false;
+        this->game_blocks[current_y][current_x + 1].block = moving_block;
         moving_block->modify_x(current_x + 1);
     }
     break;
 
     case 80://方向下
     {
-
+        int tmp = 0;
+        if (current_y == 0)
+        {
+            return;
+        }
+        if (!this->game_blocks[current_y - 1][current_x].is_none || this->game_blocks[current_y - 1][current_x].is_uncombined)
+        {
+            return;
+        }
+        while (!this->game_blocks[tmp][current_x].is_none)
+        {
+            tmp++;
+        }
+        this->game_blocks[tmp][current_x].is_none = false;
+        this->game_blocks[tmp][current_x].is_uncombined = false;
+        this->game_blocks[tmp][current_x].block = moving_block;
+        this->game_blocks[current_y][current_x].is_none = true;
+        moving_block->modify_y(tmp);
     }
     break;
-    }
 
+    }
 }
 
-void framework::time_drop()
+void framework::time_drop(number_block* moving_block)
 {
-    ;
+    unsigned int current_x = moving_block->get_x;
+    unsigned int current_y = moving_block->get_y;
+    if (!moving_block->get_is_moving)
+    {
+        return;
+    }
+    else if (!this->game_blocks[current_y - 1][current_x].is_none)
+    {
+        return;
+    }
+    moving_block->modify_y(current_y - 1);
+    this->game_blocks[current_y][current_x].is_none = true;
+    this->game_blocks[current_y - 1][current_x].is_none = false;
+    this->game_blocks[current_y - 1][current_x].is_uncombined = false;
+    this->game_blocks[current_y - 1][current_x].block = moving_block;
+    _sleep(1000);
+    return;
 }
 
 unsigned int framework::return_mark()

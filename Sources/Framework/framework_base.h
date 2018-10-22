@@ -5,7 +5,7 @@ public:
     framework(int difficulty) :difficulty(difficulty) {};
     bool end_judge(number_block* moving_block);//游戏结束条件判断
     void control(const unsigned char control_flag, number_block* moving_block);//方向键控制方法，参数为按键对应的ascii和指向正在下落块的指针
-    void time_drop();//随时间自动下落
+    void time_drop(number_block* moving_block);//随时间自动下落
     unsigned int return_mark();//返回得分
 private:
     unsigned int difficulty;
