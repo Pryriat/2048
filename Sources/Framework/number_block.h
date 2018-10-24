@@ -9,9 +9,10 @@
 class number_block {
   public :
     number_block() {}
-    // 生成数字2,4,8,未实现根据难度调节数字,有待修正
+    // 以系统时间为种进行随机, difficulty :1 2 3对应只生成2, 24, 248
     unsigned int generate_number(int difficulty) {
-        return 1 << (rand() % 3 + 1);
+        srand((unsigned)time(NULL));
+        return 1 << (rand() % difficulty + 1);
     }
     // 初始化
     number_block(int difficulty, bool canBeMove = true, int x = 1, int y = 1) {
