@@ -187,6 +187,156 @@ class number_block {
 
 ## 三.系统设计
 ### （一）架构设计
+####framwork_base.h
+游戏结束条件判断
+
+     bool end_judge(number_block* moving_block);
+
+方向键控制方法
+
+    void control(const unsigned char control_flag, number_block* moving_block);
+
+定义了框架内每个方块的元素类型
+
+    struct framework_block_item
+    {
+        number_block* block;
+        bool is_none;
+        bool is_uncombined;
+    };
+####number_block.h
+以系统时间为种进行随机生成数字块的数值
+
+    number_block() {}
+    // 以系统时间为种进行随机, difficulty :1 2 3对应只生成2, 24, 248
+    unsigned int generate_number(int difficulty) {
+        srand((unsigned)time(NULL));
+        return 1 << (rand() % difficulty + 1);
+    }
+初始化数字块
+
+     number_block(int difficulty, bool canBeMove = true, int x = 1, int y = 1) {
+        is_moving = canBeMove;
+        this -> x = x;
+        this -> y = y;
+        number = generate_number(difficulty);
+    }
+修改数字块相应的属性
+
+     void modify_x(unsigned int x) {
+        this -> x = x;
+    }
+    void modify_y(unsigned int y) {
+        this -> y = y;
+    }
+    void modify_number(unsigned int number) {
+        this -> number = number;
+    }
+    void modify_is_moving(bool is_moving) {
+        this -> is_moving = is_moving;
+    }
+获取数字块相应属性
+   
+    unsigned int get_x() {
+        return x;
+    }
+    unsigned int get_y() {
+        return y;
+    }
+    unsigned int get_number() {
+        return number;
+    }
+    unsigned int get_is_moving() {
+        return is_moving;
+    }
+####suitiation_judgement.h
+超出上界和填满空格判断
+
+    bool framework::end_judge(number_block* moving_block)
+{
+    unsigned int current_x = moving_block->get_x();
+    unsigned int current_y = moving_block->get_y();
+
+    //超出上界判断
+    if ((this->game_blocks[current_x][current_y - 1].is_none == false) && current_y == column - 1)
+    {
+        return true;
+    }
+
+    //填满空格判断
+    for (current_y = 0; current_y < row; ++current_y)
+    {
+        for (current_x = 0; current_x < column; ++current_x)
+        {
+            if (game_blocks[current_y][current_x].is_none)
+            {
+                return false;
+            }
+        }
+    }
+    if (current_y == row && current_x == column)
+    {
+        return true;
+    }
+控制数字块左移
+    case 75://方向左
+    {
+        if (current_x == 0)//
+        {//边界判断
+            return;
+        }
+
+        if (!this->game_blocks[current_y][current_x - 1].is_none || this->game_blocks[current_y][current_x - 1].is_uncombined)
+        {//左侧块为空块或为障碍块
+            return;
+        }
+
+        game_blocks[current_y][current_x].is_none = true;
+        game_blocks[current_y][current_x - 1].is_none = false;
+        game_blocks[current_y][current_x - 1].block = moving_block;
+        moving_block->modify_x(current_x - 1);
+    }
+    break;
+控制数字块右移
+
+    case 77://方向右
+    {
+        if (current_x == this->column - 1)
+            return;
+        else if (!this->game_blocks[current_y][current_x + 1].is_none || this->game_blocks[current_y][current_x + 1].is_uncombined)
+        {//右侧块不为空或为障碍块
+            return;
+        }
+        this->game_blocks[current_y][current_x].is_none = true;
+        this->game_blocks[current_y][current_x + 1].is_none = false;
+        this->game_blocks[current_y][current_x + 1].block = moving_block;
+        moving_block->modify_x(current_x + 1);
+    }
+    break;
+控制数字块下移
+
+    case 80://方向下
+    {
+        int tmp = 0;
+        if (current_y == 0)
+        {
+            return;
+        }
+        if (!this->game_blocks[current_y - 1][current_x].is_none || this->game_blocks[current_y - 1][current_x].is_uncombined)
+        {
+            return;
+        }
+        while (!this->game_blocks[tmp][current_x].is_none)
+        {
+            tmp++;
+        }
+        this->game_blocks[tmp][current_x].is_none = false;
+        this->game_blocks[tmp][current_x].is_uncombined = false;
+        this->game_blocks[tmp][current_x].block = moving_block;
+        this->game_blocks[current_y][current_x].is_none = true;
+        moving_block->modify_y(tmp);
+    }
+    break;
 ### （二）数据库设计
 
 ## 四.Alpha任务分配计划
