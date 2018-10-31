@@ -40,3 +40,6 @@
 *.vcxproj
 *.log
 *.tlog
+
+# hyz's personal files
+.vimrc
