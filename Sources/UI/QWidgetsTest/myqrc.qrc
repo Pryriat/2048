@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/block.png</file>
+        <file>images/block_2.png</file>
+        <file>images/block_4.png</file>
+        <file>images/block_8.png</file>
+        <file>images/block_16.png</file>
+        <file>images/block_32.png</file>
+        <file>images/block_64.png</file>
+        <file>images/block_128.png</file>
+        <file>images/block_256.png</file>
+        <file>images/block_512.png</file>
+        <file>images/block_1024.png</file>
+        <file>images/block_2048.png</file>
+        <file>images/block_4096.png</file>
+        <file>images/block_Empty.png</file>
+        <file>images/gameBackground.png</file>
+        <file>images/gameIcon.png</file>
+        <file>images/gameLoading.png</file>
+        <file>images/gameMenu.png</file>
+        <file>images/MessageBoxBackground.png</file>
+        <file>images/ScoreBackground.png</file>
+    </qresource>
+</RCC>
