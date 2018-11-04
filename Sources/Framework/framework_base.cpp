@@ -87,7 +87,7 @@ void framework::printGameBoard() {
     for(int y = row - 1; y >= 0; y--) {
         for(int x = 0; x < column; x++) {
             if (is_blank(x, y)) {
-                printf("   ");
+                printf("    ");
             } else if (is_uncombined(x, y)) {
                 printf("   #");
             } else {
