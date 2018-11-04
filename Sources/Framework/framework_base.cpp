@@ -82,3 +82,19 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
     
     moving_block = pNumBlock;
 }
+
+void framework::printGameBoard() {
+    for(int y = row - 1; y >= 0; y--) {
+        for(int x = 0; x < column; x++) {
+            if (is_blank(x, y)) {
+                printf("    ");
+            } else if (is_uncombined(x, y)) {
+                printf("    #");
+            } else {
+                printf("%4d", game_blocks[x][y].block->get_number());
+            }
+            printf(" ");
+        }
+        printf("\n");
+    }
+}
