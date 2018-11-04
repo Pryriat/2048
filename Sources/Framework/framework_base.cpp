@@ -22,11 +22,14 @@ void framework::merge_block() {
     int y = moving_block->get_y();
     int new_number = moving_block->get_number();
     int dx[] = {-1, 0, 1}, dy[] = {0, -1, 0};
+    // 枚举左下右三个格子
     for (int i = 0; i < 3; i++) {
         int nx = x + dx[i];
         int ny = y + dy[i];
+        // 判断格子是否合法以及是否能和移动块合并
         if (!is_crossed(nx, ny) && !is_blank(nx, ny) &&
                 !is_uncombined(nx, ny) && is_same_number(x, y, nx, ny)) {
+            // 数字翻倍并合并
             new_number *= 2;
             set_block_blank(nx, ny);
         }
@@ -38,8 +41,9 @@ void framework::merge_block() {
 void framework::place_new_block() {
     int x = moving_block->get_x();
     int y = moving_block->get_y();
+    // 判断移动块是否下落一个
     if (!is_crossed(x, y - 1) && is_blank(x, y - 1)) {
-        moving_block->modify_x(y - 1);
+        moving_block->modify_y(y - 1);
         game_blocks[x][y-1].is_none = false;
         game_blocks[x][y-1].block = moving_block;
     } else {
