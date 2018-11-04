@@ -1,22 +1,22 @@
-# 2048 Êı¾İ¿â½Ó¿ÚÓëÊ¾Àı
+# 2048 æ•°æ®åº“æ¥å£ä¸ç¤ºä¾‹
 
-## ×ÛÊö
+## ç»¼è¿°
 
-ÓÃÓÚÓë±¾µØ/Ô¶³ÌRedisÊı¾İ¿âÁ¬½Ó²¢´«ÊäÓÎÏ··ÖÊıµÄ½Ó¿ÚÓë¶ÔÓ¦ÊµÏÖ
+ç”¨äºä¸æœ¬åœ°/è¿œç¨‹Redisæ•°æ®åº“è¿æ¥å¹¶ä¼ è¾“æ¸¸æˆåˆ†æ•°çš„æ¥å£ä¸å¯¹åº”å®ç°
 
-## ½Ó¿Ú
+## æ¥å£
 
 ```cpp
-bool Start_Connection();//ÅĞ¶ÏÁ¬½ÓÊı¾İ¿âÊÇ·ñ³É¹¦£¬ÔÚÕû¸ö³ÌĞòÖĞÖ»ÔÊĞíµ÷ÓÃÒ»´Î
-bool Upload_on_Clicked(QString Mark, QString AuthCode);//ÉÏ´«·ÖÊı¡¢ÈÏÖ¤Âë£¬°üº¬¼òµ¥Òì³£´¦Àí
-QString Query_on_Clicked();//²éÑ¯·ÖÊı£¬°üº¬¼òµ¥Òì³£´¦Àí
-DBM(QString IP_Address, unsigned int port):Connector(IP_Address,port){};//¹¹ÔìÆ÷£¬µÚÒ»²ÎÊıÎªip£¬µÚ¶ş²ÎÊıÎªÊı¾İ¿â¶Ë¿Ú£¬Ä¬ÈÏÎª6379
+bool Start_Connection();//åˆ¤æ–­è¿æ¥æ•°æ®åº“æ˜¯å¦æˆåŠŸï¼Œåœ¨æ•´ä¸ªç¨‹åºä¸­åªå…è®¸è°ƒç”¨ä¸€æ¬¡
+bool Upload_on_Clicked(QString Mark, QString AuthCode);//ä¸Šä¼ åˆ†æ•°ã€è®¤è¯ç ï¼ŒåŒ…å«ç®€å•å¼‚å¸¸å¤„ç†
+QString Query_on_Clicked();//æŸ¥è¯¢åˆ†æ•°ï¼ŒåŒ…å«ç®€å•å¼‚å¸¸å¤„ç†
+DBM(QString IP_Address, unsigned int port):Connector(IP_Address,port){};//æ„é€ å™¨ï¼Œç¬¬ä¸€å‚æ•°ä¸ºipï¼Œç¬¬äºŒå‚æ•°ä¸ºæ•°æ®åº“ç«¯å£ï¼Œé»˜è®¤ä¸º6379
 ```
 
-## ÎÄ¼şÊ÷
+## æ–‡ä»¶æ ‘
 
 ```
-½Ó¿Ú
+æ¥å£
 |--database_management.h
 |--qtredis.h
 |--reader.h
@@ -25,7 +25,7 @@ DBM(QString IP_Address, unsigned int port):Connector(IP_Address,port){};//¹¹ÔìÆ÷
 |--reader.cpp
 ```
 
-## ÓÃÀı
+## ç”¨ä¾‹
 
 ```cpp
 this->Demo->Start_Connection();
@@ -40,11 +40,11 @@ void Widget::on_clicked()
     }
     if(this->Demo->Upload_on_Clicked(this->Mark->text(),this->Authcode->text()))
     {
-        //ÉÏ´«³É¹¦
+        //ä¸Šä¼ æˆåŠŸ
     }
     else
     {
-        //ÉÏ´«Ê§°Ü
+        //ä¸Šä¼ å¤±è´¥
     }
 }
 
@@ -55,7 +55,7 @@ void Widget::show_result()
         QMessageBox::about(this,"Mark:",Mark);
     else
     {
-        //²éÑ¯Ê§°Ü
+        //æŸ¥è¯¢å¤±è´¥
     }
 }
 
