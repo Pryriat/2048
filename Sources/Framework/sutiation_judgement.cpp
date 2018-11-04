@@ -16,14 +16,28 @@ void framework::key_control()
     int input = 0;
     while (1)
     {
+        
         if (_kbhit())
         {
-            control(_getch());
+            if (this->remark_flag)
+            {
+                this->remark_flag = false;
+                control(_getch());
+                this->remark_flag = true;
+            }
         }
     }
     return;
 }
 
+bool framework::is_generate()
+{
+    unsigned int current_x = this->moving_block->get_x();
+    unsigned int current_y = this->moving_block->get_y();
+    if (this->game_blocks[current_x][current_y - 1].is_none)
+        return false;
+    return true;
+}
 bool framework::end_judge()
 {
     unsigned int current_x = this->moving_block->get_x();
@@ -119,8 +133,8 @@ void framework::control(unsigned char control_flag)
     default:
         break;
     }
+    system("cls");
     printGameBoard();
-    system("clear");
     return;
 }
 
@@ -128,25 +142,30 @@ void framework::time_drop()
 {
     while (1)
     {
-        unsigned int current_x = this->moving_block->get_x();
-        unsigned int current_y = this->moving_block->get_y();
-        if (!this->moving_block->get_is_moving())
+        if (this->remark_flag)
         {
-            continue;
+            this->remark_flag = false;
+            unsigned int current_x = this->moving_block->get_x();
+            unsigned int current_y = this->moving_block->get_y();
+            if (!this->moving_block->get_is_moving())
+            {
+                continue;
+            }
+            else if (!this->game_blocks[current_x][current_y - 1].is_none)
+            {
+                continue;
+            }
+            this->moving_block->modify_y(current_y - 1);
+            this->game_blocks[current_x][current_y].is_none = true;
+            this->game_blocks[current_x][current_y - 1].is_none = false;
+            this->game_blocks[current_x][current_y - 1].is_uncombined = false;
+            this->game_blocks[current_x][current_y - 1].block = this->moving_block;
         }
-        else if (!this->game_blocks[current_x][current_y - 1].is_none)
-        {
-            continue;
+        system("cls");
+        printGameBoard();
+        this->remark_flag = true;
+        Sleep(5000);
         }
-        this->moving_block->modify_y(current_y - 1);
-        this->game_blocks[current_x][current_y].is_none = true;
-        this->game_blocks[current_x][current_y - 1].is_none = false;
-        this->game_blocks[current_x][current_y - 1].is_uncombined = false;
-        this->game_blocks[current_x][current_y - 1].block = this->moving_block;
-    }
-    printGameBoard();
-    system("clear");
-    Sleep(1000);
 }
 
 unsigned int framework::return_mark()
@@ -169,16 +188,15 @@ void framework::Start()
             this->game_blocks[x][y].is_uncombined = false;
         }
     }
-    generate_block();
-
+    setMovingBlock(generate_block());
+    std::thread mv(std::bind(&framework::key_control, this));
+    std::thread td(std::bind(&framework::time_drop, this));
     while (!end_judge())
     {
-        std::thread mv(std::bind(&framework::key_control, this));
-        std::thread td(std::bind(&framework::time_drop, this));
-        mv.detach();
-        td.detach();
+       if(this->is_generate())
+           setMovingBlock(generate_block());
     }
-
-
+    mv.detach();
+    td.detach();
 }
 #endif
