@@ -132,6 +132,6 @@ unsigned int framework::return_mark()
 
 framework_block_item* framework::current_status()
 {
-    return &(this->game_blocks);
+    return &(this->game_blocks[0][0]);
 }
 #endif
