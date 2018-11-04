@@ -16,15 +16,11 @@ void framework::key_control()
     int input = 0;
     while (1)
     {
-        
         if (_kbhit())
         {
-            if (this->remark_flag)
-            {
-                this->remark_flag = false;
-                control(_getch());
-                this->remark_flag = true;
-            }
+            while (this->lock_stream.test_and_set());
+            control(_getch());
+            this->lock_stream.clear();
         }
     }
     return;
@@ -142,29 +138,26 @@ void framework::time_drop()
 {
     while (1)
     {
-        if (this->remark_flag)
+        while (this->lock_stream.test_and_set());
+        unsigned int current_x = this->moving_block->get_x();
+        unsigned int current_y = this->moving_block->get_y();
+        if (!this->moving_block->get_is_moving())
         {
-            this->remark_flag = false;
-            unsigned int current_x = this->moving_block->get_x();
-            unsigned int current_y = this->moving_block->get_y();
-            if (!this->moving_block->get_is_moving())
-            {
-                continue;
-            }
-            else if (!this->game_blocks[current_x][current_y - 1].is_none)
-            {
-                continue;
-            }
-            this->moving_block->modify_y(current_y - 1);
-            this->game_blocks[current_x][current_y].is_none = true;
-            this->game_blocks[current_x][current_y - 1].is_none = false;
-            this->game_blocks[current_x][current_y - 1].is_uncombined = false;
-            this->game_blocks[current_x][current_y - 1].block = this->moving_block;
+            continue;
         }
-        system("cls");
-        printGameBoard();
-        this->remark_flag = true;
-        Sleep(5000);
+        else if (!this->game_blocks[current_x][current_y - 1].is_none)
+        {
+            continue;
+        }
+        this->moving_block->modify_y(current_y - 1);
+        this->game_blocks[current_x][current_y].is_none = true;
+        this->game_blocks[current_x][current_y - 1].is_none = false;
+        this->game_blocks[current_x][current_y - 1].is_uncombined = false;
+        this->game_blocks[current_x][current_y - 1].block = this->moving_block;
+    system("cls");
+    printGameBoard();
+    this->lock_stream.clear();
+    Sleep(5000);
         }
 }
 

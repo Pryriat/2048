@@ -11,7 +11,7 @@ class framework
 {
 public:
     number_block* moving_block;
-    std::atomic<bool> remark_flag = true;//多线程修改状态
+    std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;//多线程修改状态
     void Start();//初始化与游戏流程函数
     framework(int difficulty) :difficulty(difficulty) {};
     bool end_judge();//游戏结束条件判断
