@@ -7,6 +7,7 @@ public:
     void control(const unsigned char control_flag, number_block* moving_block);//方向键控制方法，参数为按键对应的ascii和指向正在下落块的指针
     void time_drop(number_block* moving_block);//随时间自动下落
     unsigned int return_mark();//返回得分
+    framework_block_item* current_status();//返回游戏方块数组指针
     number_block* generate_block(); // 生成数字块
     void merge(); // 合并
 private:

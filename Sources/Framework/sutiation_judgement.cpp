@@ -129,4 +129,9 @@ unsigned int framework::return_mark()
 {
     return this->mark;
 }
+
+framework_block_item* framework::urrent_status()
+{
+    return &(this->game_blocks);
+}
 #endif
