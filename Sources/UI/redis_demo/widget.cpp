@@ -1,5 +1,5 @@
 #include "widget.h"
-void on_clicked(QtRedis& redis, qint64 mark);
+#include"database_management.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -15,25 +15,7 @@ Widget::Widget(QWidget *parent)
     //信号初始化
     QObject::connect(Click, SIGNAL(clicked(bool)), this, SLOT(on_clicked()));
     QObject::connect(Result, SIGNAL(clicked(bool)), this, SLOT(show_result()));
-
-    //启动前初始化
-    if(!this->Nt->allInterfaces().length())
-    {
-        qDebug()<<"No Network Interface Enabled!\n";
-        Click->setEnabled(false);
-    }
-    else
-    {
-        qDebug()<<"Network Interface Found!\n";
-        Machine_code->setText(this->Nt->allInterfaces()[0].hardwareAddress());
-    }
-
-    if(!this->redis->openConnection())
-    {
-        qDebug()<<"Connection failed!";
-        QMessageBox::critical(this,"Warning","Connection Failed!");
-        Click->setEnabled(false);
-    }
+    this->Demo->Start_Connection();
 }
 
 void Widget::on_clicked()
@@ -44,15 +26,25 @@ void Widget::on_clicked()
         QMessageBox::critical(this,"Warning","Mark Input Failed!");
         return;
     }
-    redis->hset(this->Nt->allInterfaces()[0].hardwareAddress(),"Mark",this->Mark->text());
-    redis->hset(this->Nt->allInterfaces()[0].hardwareAddress(),"AuthCode",this->Authcode->text());
-    QMessageBox::about(this,"Success","Upload Success!");
+    if(this->Demo->Upload_on_Clicked(this->Mark->text(),this->Authcode->text()))
+    {
+        //上传成功
+    }
+    else
+    {
+        //上传失败
+    }
 }
 
 void Widget::show_result()
 {
-    QString Mark = redis->hget(this->Nt->allInterfaces()[0].hardwareAddress(),"Mark");
-    QMessageBox::about(this,"Mark:",Mark);
+    QString Mark = this->Demo->Query_on_Clicked();
+    if(Mark.length()>0)
+        QMessageBox::about(this,"Mark:",Mark);
+    else
+    {
+        //查询失败
+    }
 }
 
 Widget::~Widget()

@@ -27,9 +27,11 @@ SOURCES += \
         main.cpp \
         widget.cpp \
     reader.cpp \
-    qtredis.cpp
+    qtredis.cpp \
+    database_management.cpp
 
 HEADERS += \
     widget.h \
     reader.h \
-    qtredis.h
+    qtredis.h \
+    database_management.h

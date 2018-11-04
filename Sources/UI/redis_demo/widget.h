@@ -11,11 +11,11 @@
 #include<QMessageBox>
 #include<QVBoxLayout>
 #include<QGridLayout>
+#include"database_management.h"
 class Widget : public QWidget
 {
     Q_OBJECT
-    QtRedis* redis = new QtRedis("127.0.0.1",6379);
-
+    DBM* Demo = new DBM("127.0.0.1",6379);
     //控件声明与初始化
     QPushButton* Click = new QPushButton("Send");
     QPushButton* Result = new QPushButton("Get Result");
@@ -24,7 +24,6 @@ class Widget : public QWidget
     QLineEdit* Authcode = new QLineEdit();
     QGridLayout* LineEdit_Layout = new QGridLayout();
     QVBoxLayout* MainLayout = new QVBoxLayout(this);
-    QNetworkInterface* Nt = new QNetworkInterface();
 public:
     Widget(QWidget *parent = 0);
     ~Widget();
