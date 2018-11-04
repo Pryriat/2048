@@ -73,7 +73,7 @@ void framework::set_block_blank(int x, int y) {
     game_blocks[x][y].is_none = true;
 }
 
-void framework::setMovingBlock(number_block *pNumBlock) //Han 修改类内成员变量moving_block
+void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成员变量moving_block
 {
     if(pNumBlock == nullptr)
     {

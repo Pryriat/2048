@@ -17,8 +17,8 @@ public:
     number_block* generate_block(); // 生成数字块
     void merge(); // 合并
 	
-	//Han
-    void setMovingBlock(number_block * pNumBlock);  //修改类内成员变量moving_block
+	//Han 
+    void setMovingBlock(number_block * pNumBlock);  //  修改类内成员变量moving_block
 
 	
 private:
