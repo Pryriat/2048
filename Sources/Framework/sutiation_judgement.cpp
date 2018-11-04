@@ -10,6 +10,7 @@ Ver:Alpha
 #include"framework_base.h"
 #include<thread>
 #include<conio.h>
+#include<windows.h>
 void framework::key_control()
 {
     int input = 0;
@@ -118,27 +119,34 @@ void framework::control(unsigned char control_flag)
     default:
         break;
     }
+    printGameBoard();
+    system("clear");
     return;
 }
 
 void framework::time_drop()
 {
-    unsigned int current_x = this->moving_block->get_x();
-    unsigned int current_y = this->moving_block->get_y();
-    if (!this->moving_block->get_is_moving())
+    while (1)
     {
-        return;
+        unsigned int current_x = this->moving_block->get_x();
+        unsigned int current_y = this->moving_block->get_y();
+        if (!this->moving_block->get_is_moving())
+        {
+            continue;
+        }
+        else if (!this->game_blocks[current_x][current_y - 1].is_none)
+        {
+            continue;
+        }
+        this->moving_block->modify_y(current_y - 1);
+        this->game_blocks[current_x][current_y].is_none = true;
+        this->game_blocks[current_x][current_y - 1].is_none = false;
+        this->game_blocks[current_x][current_y - 1].is_uncombined = false;
+        this->game_blocks[current_x][current_y - 1].block = this->moving_block;
     }
-    else if (!this->game_blocks[current_x][current_y-1].is_none)
-    {
-        return;
-    }
-    this->moving_block->modify_y(current_y - 1);
-    this->game_blocks[current_x][current_y].is_none = true;
-    this->game_blocks[current_x][current_y-1].is_none = false;
-    this->game_blocks[current_x][current_y-1].is_uncombined = false;
-    this->game_blocks[current_x][current_y-1].block = this->moving_block;
-    return;
+    printGameBoard();
+    system("clear");
+    Sleep(1000);
 }
 
 unsigned int framework::return_mark()
@@ -157,19 +165,20 @@ void framework::Start()
     {
          for(int y = 0; y < this->row; y++)
         {
-            this->game_blocks[x][y].block = NULL;
             this->game_blocks[x][y].is_none = true;
             this->game_blocks[x][y].is_uncombined = false;
         }
     }
     generate_block();
-    std::thread mv(key_control);
-    std::thread td(time_drop);
 
     while (!end_judge())
     {
-        mv.join();
-        td.join();
+        std::thread mv(std::bind(&framework::key_control, this));
+        std::thread td(std::bind(&framework::time_drop, this));
+        mv.detach();
+        td.detach();
     }
+
+
 }
 #endif
