@@ -15,7 +15,7 @@ class number_block {
         return 1 << (rand() % difficulty + 1);
     }
     // 初始化
-    number_block(int difficulty, bool canBeMove = true, int x = 1, int y = 1) {
+    number_block(int difficulty, bool canBeMove = true, unsigned int x = 1, unsigned int y = 1) {
         is_moving = canBeMove;
         this -> x = x;
         this -> y = y;
