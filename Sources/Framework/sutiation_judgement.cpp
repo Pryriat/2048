@@ -19,7 +19,8 @@ void framework::key_control()
         if (_kbhit())
         {
             while (this->lock_stream.test_and_set());
-            control(_getch());
+            if (_getch() == 224)
+                control(_getch());
             this->lock_stream.clear();
         }
     }
