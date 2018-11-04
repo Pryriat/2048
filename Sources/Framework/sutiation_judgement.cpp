@@ -8,23 +8,36 @@ Ver:Alpha
 #define SUTIATION_JUDGEMENT_H_INCLUDED
 
 #include"framework_base.h"
-
-
-bool framework::end_judge(number_block* moving_block)
+#include<thread>
+#include<conio.h>
+void framework::key_control()
 {
-    unsigned int current_x = moving_block->get_x();
-    unsigned int current_y = moving_block->get_y();
+    int input = 0;
+    while (1)
+    {
+        if (_kbhit())
+        {
+            control(_getch());
+        }
+    }
+    return;
+}
+
+bool framework::end_judge()
+{
+    unsigned int current_x = this->moving_block->get_x();
+    unsigned int current_y = this->moving_block->get_y();
 
     //超出上界判断
-    if ((this->game_blocks[current_x][current_y - 1].is_none == false) && current_y == column - 1)
+    if ((this->game_blocks[current_x][current_y - 1].is_none == false) && current_y == this->row - 1)
     {
         return true;
     }
 
     //填满空格判断
-    for (current_x = 0; current_x < row; ++current_x)
+    for (current_x = 0; current_x < this->column; ++current_x)
     {
-        for (current_y = 0; current_y < column; ++current_y)
+        for (current_y = 0; current_y < this->row; ++current_y)
         {
             if (game_blocks[current_x][current_y].is_none)
             {
@@ -32,17 +45,17 @@ bool framework::end_judge(number_block* moving_block)
             }
         }
     }
-    if (current_x == row && current_y == column)
+    if (current_x == this->column && current_y == this->row)
     {
         return true;
     }
     return false;
 }
 
-void framework::control(unsigned char control_flag, number_block* moving_block)
+void framework::control(unsigned char control_flag)
 {
-    unsigned int current_x = moving_block->get_x();
-    unsigned int current_y = moving_block->get_y();
+    unsigned int current_x = this->moving_block->get_x();
+    unsigned int current_y = this->moving_block->get_y();
     switch (control_flag)
     {
     case 75://方向左
@@ -59,8 +72,8 @@ void framework::control(unsigned char control_flag, number_block* moving_block)
 
         game_blocks[current_x][current_y].is_none = true;
         game_blocks[current_x-1][current_y].is_none = false;
-        game_blocks[current_x-1][current_y].block = moving_block;
-        moving_block->modify_x(current_x-1);
+        game_blocks[current_x-1][current_y].block = this->moving_block;
+        this->moving_block->modify_x(current_x-1);
     }
     break;
 
@@ -74,8 +87,8 @@ void framework::control(unsigned char control_flag, number_block* moving_block)
         }
         this->game_blocks[current_x][current_y].is_none = true;
         this->game_blocks[current_x+1][current_y].is_none = false;
-        this->game_blocks[current_x+1][current_y].block = moving_block;
-        moving_block->modify_x(current_x+1);
+        this->game_blocks[current_x+1][current_y].block = this->moving_block;
+        this->moving_block->modify_x(current_x+1);
     }
     break;
 
@@ -96,19 +109,23 @@ void framework::control(unsigned char control_flag, number_block* moving_block)
         }
         this->game_blocks[current_x][tmp].is_none = false;
         this->game_blocks[current_x][tmp].is_uncombined = false;
-        this->game_blocks[current_x][tmp].block = moving_block;
+        this->game_blocks[current_x][tmp].block = this->moving_block;
         this->game_blocks[current_x][current_y].is_none = true;
-        moving_block->modify_y(tmp);
+        this->moving_block->modify_y(tmp);
     }
     break;
+
+    default:
+        break;
     }
+    return;
 }
 
-void framework::time_drop(number_block* moving_block)
+void framework::time_drop()
 {
-    unsigned int current_x = moving_block->get_x();
-    unsigned int current_y = moving_block->get_y();
-    if (!moving_block->get_is_moving())
+    unsigned int current_x = this->moving_block->get_x();
+    unsigned int current_y = this->moving_block->get_y();
+    if (!this->moving_block->get_is_moving())
     {
         return;
     }
@@ -116,11 +133,11 @@ void framework::time_drop(number_block* moving_block)
     {
         return;
     }
-    moving_block->modify_y(current_y - 1);
+    this->moving_block->modify_y(current_y - 1);
     this->game_blocks[current_x][current_y].is_none = true;
     this->game_blocks[current_x][current_y-1].is_none = false;
     this->game_blocks[current_x][current_y-1].is_uncombined = false;
-    this->game_blocks[current_x][current_y-1].block = moving_block;
+    this->game_blocks[current_x][current_y-1].block = this->moving_block;
     return;
 }
 
@@ -132,5 +149,27 @@ unsigned int framework::return_mark()
 framework_block_item* framework::current_status()
 {
     return &(this->game_blocks[0][0]);
+}
+
+void framework::Start()
+{
+    for(int x = 0; x < this->column; x++)//初始化
+    {
+         for(int y = 0; y < this->row; y++)
+        {
+            this->game_blocks[x][y].block = NULL;
+            this->game_blocks[x][y].is_none = true;
+            this->game_blocks[x][y].is_uncombined = false;
+        }
+    }
+    generate_block();
+    std::thread mv(key_control);
+    std::thread td(time_drop);
+
+    while (!end_judge())
+    {
+        mv.join();
+        td.join();
+    }
 }
 #endif
