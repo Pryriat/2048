@@ -19,7 +19,7 @@ private:
         bool is_uncombined;//障碍块标识符
     };
     const static unsigned int row = 5;
-    const static unsigned int column = 5;
+    const static unsigned int column = 7;
     unsigned int mark = 0;
     framework_block_item game_blocks[row][column];
     number_block* moving_block;
