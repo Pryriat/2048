@@ -1,4 +1,4 @@
-/*
+﻿/*
 Author:Chernobyl
 Date:2018/10/19
 Ver:Alpha
@@ -36,6 +36,7 @@ bool framework::end_judge(number_block* moving_block)
     {
         return true;
     }
+    return false;
 }
 
 void framework::control(unsigned char control_flag, number_block* moving_block)
@@ -106,9 +107,9 @@ void framework::control(unsigned char control_flag, number_block* moving_block)
 
 void framework::time_drop(number_block* moving_block)
 {
-    unsigned int current_x = moving_block->get_x;
-    unsigned int current_y = moving_block->get_y;
-    if (!moving_block->get_is_moving)
+    unsigned int current_x = moving_block->get_x();
+    unsigned int current_y = moving_block->get_y();
+    if (!moving_block->get_is_moving())
     {
         return;
     }
@@ -121,7 +122,6 @@ void framework::time_drop(number_block* moving_block)
     this->game_blocks[current_y - 1][current_x].is_none = false;
     this->game_blocks[current_y - 1][current_x].is_uncombined = false;
     this->game_blocks[current_y - 1][current_x].block = moving_block;
-    _sleep(1000);
     return;
 }
 

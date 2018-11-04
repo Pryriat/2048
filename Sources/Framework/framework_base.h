@@ -1,4 +1,10 @@
-#include"number_block.h"
+﻿#include"number_block.h"
+struct framework_block_item//框架内每个方块的元素类型
+{
+    number_block* block;//数字类
+    bool is_none;//空白区域标识符
+    bool is_uncombined;//障碍块标识符
+};
 class framework
 {
 public:
@@ -12,12 +18,6 @@ public:
     void merge(); // 合并
 private:
     unsigned int difficulty;
-    struct framework_block_item//框架内每个方块的元素类型
-    {
-        number_block* block;//数字类
-        bool is_none;//空白区域标识符
-        bool is_uncombined;//障碍块标识符
-    };
     const static unsigned int row = 5;
     const static unsigned int column = 7;
     unsigned int mark = 0;
