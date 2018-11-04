@@ -33,6 +33,7 @@ bool framework::is_generate()
     unsigned int current_y = this->moving_block->get_y();
     if (this->game_blocks[current_x][current_y - 1].is_none)
         return false;
+    merge();
     return true;
 }
 bool framework::end_judge()
@@ -142,6 +143,10 @@ void framework::time_drop()
         while (this->lock_stream.test_and_set());
         unsigned int current_x = this->moving_block->get_x();
         unsigned int current_y = this->moving_block->get_y();
+        if (current_y == 0)
+        {
+            continue;
+        }
         if (!this->moving_block->get_is_moving())
         {
             continue;
