@@ -20,7 +20,7 @@ public:
     framework_block_item* current_status();//返回游戏方块数组指针
     number_block* generate_block(); // 生成数字块
     void merge(); // 合并
-
+    void printGameBoard(); // 输出游戏局面
 	//Han
     void setMovingBlock(number_block * pNumBlock);  //  修改类内成员变量moving_block
 
