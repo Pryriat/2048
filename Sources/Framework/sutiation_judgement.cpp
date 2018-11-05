@@ -71,11 +71,13 @@ void framework::control(unsigned char control_flag)
     {
         if (current_x == 0)
         {//边界判断
+            this->lock_stream.clear();//释放锁
             return;
         }
 
         if (!this->game_blocks[current_x-1][current_y].is_none || this->game_blocks[current_x-1][current_y].is_uncombined)
         {//左侧块非空或为障碍块
+            this->lock_stream.clear();//释放锁
             return;
         }
 
@@ -89,10 +91,14 @@ void framework::control(unsigned char control_flag)
 
     case 77://方向右
     {
-        if (current_x == this->column-1)//右边界判断
+        if (current_x == this->column - 1)//右边界判断
+        {
+            this->lock_stream.clear();//释放锁
             return;
+        }
         else if (!this->game_blocks[current_x+1][current_y].is_none || this->game_blocks[current_x+1][current_y].is_uncombined)
         {//右侧块不为空或为障碍块
+            this->lock_stream.clear();//释放锁
             return;
         }
         this->game_blocks[current_x][current_y].is_none = true;
@@ -108,10 +114,12 @@ void framework::control(unsigned char control_flag)
         unsigned int tmp = 0;
         if (current_y == 0)//触底判断
         {
+            this->lock_stream.clear();//释放锁
             return;
         }
         if (!this->game_blocks[current_x][current_y-1].is_none || this->game_blocks[current_x][current_y-1].is_uncombined)
         {//如果方块下为非空块或为障碍块
+            this->lock_stream.clear();//释放锁
             return;
         }
         while (!this->game_blocks[current_x][tmp].is_none)
@@ -144,14 +152,17 @@ void framework::time_drop()//随时间下落函数，单独线程执行
         unsigned int current_y = this->moving_block->get_y();
         if (current_y == 0)//如果触底，返回继续循环
         {
+            this->lock_stream.clear();//释放锁
             continue;
         }
         if (!this->moving_block->get_is_moving())
         {//移动块因某种原因处于未移动状态，返回继续循环
+            this->lock_stream.clear();//释放锁
             continue;
         }
         else if (!this->game_blocks[current_x][current_y - 1].is_none)
         {//方块下接触到其他方块，返回继续循环
+            this->lock_stream.clear();//释放锁
             continue;
         }
         this->moving_block->modify_y(current_y - 1);
@@ -192,5 +203,7 @@ void framework::Start()
     while (!end_judge());//循环条件为游戏未结束
     mv.detach();//游戏结束，退出线程
     td.detach();
+    system("pause");
+    return;
 }
 #endif
