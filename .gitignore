@@ -42,4 +42,7 @@
 *.tlog
 
 # hyz's personal files
+t
+tags
+make
 .vimrc
