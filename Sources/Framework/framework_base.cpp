@@ -106,6 +106,7 @@ void framework::printGameBoard() {
 #endif
     for(int y = ROW - 1; y >= 0; y--) {
         prinSeperationLine();
+        printf("%d ", y);
         printf("|");
         for(int x = 0; x < COLUMN; x++) {
             if (is_blank(x, y)) {
@@ -120,6 +121,7 @@ void framework::printGameBoard() {
         printf("\n");
     }
     prinSeperationLine();
+    addColumnNumber();
 }
 
 void framework::prinSeperationLine() {
@@ -128,7 +130,7 @@ void framework::prinSeperationLine() {
             printf("-");
         }
     }
-    printf("-\n");
+    printf("---\n");
 }
 
 bool framework::cannotDrop() {
@@ -137,4 +139,13 @@ bool framework::cannotDrop() {
     if(y == 0 || !is_blank(x, y - 1))
         return true;
     return false;
+}
+
+
+void framework::addColumnNumber() {
+    printf("  ");
+    for(int i = 0; i < COLUMN; i++) {
+        printf("    %d", i);
+    }
+    printf("\n");
 }

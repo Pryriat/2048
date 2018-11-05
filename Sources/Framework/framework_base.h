@@ -44,4 +44,5 @@ private:
     void set_block_blank(int x, int y);
     void prinSeperationLine();
     bool cannotDrop();
+    void addColumnNumber();
 };
