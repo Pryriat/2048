@@ -30,7 +30,7 @@ void framework::merge_block() {
         int nx = x + dx[i];
         int ny = y + dy[i];
         // 判断格子是否合法以及是否能和移动块合并
-        if (is_crossed(nx, ny) && !is_blank(nx, ny) &&//条件修改，将is_crossed(nx, ny)前的叹号去除
+        if (is_crossed(nx, ny) && !is_blank(nx, ny) &&//33 条件修改，将is_crossed(nx, ny)前的叹号去除 Chernobyl
                 !is_uncombined(nx, ny) && is_same_number(x, y, nx, ny)) {
             // 数字翻倍并合并
             new_number *= 2;
@@ -44,13 +44,13 @@ void framework::merge_block() {
 void framework::place_new_block() {
     int x = moving_block->get_x();
     int y = moving_block->get_y();
-    if (y == 0)
+    if (y == 0)//47-51 添加y==0的情况以便于在触底的情况下调用merge。Chernobyl
     {
         game_blocks[x][y].is_none = false;
         game_blocks[x][y].block = moving_block;
     }
     // 判断移动块是否下落一个
-    else if (is_crossed(x, y - 1) && is_blank(x, y - 1)) {
+    else if (is_crossed(x, y - 1) && is_blank(x, y - 1)) {//53 条件修改，将is_crossed(nx, ny)前的叹号去除 Chernobyl
         moving_block->modify_y(y - 1);
         game_blocks[x][y-1].is_none = false;
         game_blocks[x][y-1].block = moving_block;
@@ -96,7 +96,7 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
     this->game_blocks[x][y].block = pNumBlock;
 }
 
-void framework::printGameBoard() {//用于debug的输出函数，输出信息为数字块,横坐标,纵坐标
+void framework::printGameBoard() {//99-125 用于debug的输出函数，输出信息为数字块,横坐标,纵坐标 Chernobyl
     //while (this->lock_stream.test_and_set());
     system("cls");
     

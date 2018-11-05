@@ -161,7 +161,7 @@ void framework::time_drop()//随时间下落函数，单独线程执行
         this->game_blocks[current_x][current_y - 1].block = this->moving_block;
         printGameBoard();
         this->lock_stream.clear();
-        Sleep(5000);//延时5s
+        Sleep(1000);//延时1s
     }
 }
 
@@ -188,9 +188,9 @@ void framework::Start()
     setMovingBlock(generate_block());//生成第一个移动块
     printGameBoard();//输出界面
     std::thread mv(std::bind(&framework::key_control, this));//载入监听方向键的线程
-    //std::thread td(std::bind(&framework::time_drop, this));
+    std::thread td(std::bind(&framework::time_drop, this));
     while (!end_judge());//循环条件为游戏未结束
     mv.detach();//游戏结束，退出线程
-    //td.detach();
+    td.detach();
 }
 #endif
