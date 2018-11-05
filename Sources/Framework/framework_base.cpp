@@ -1,4 +1,4 @@
-/* Copyright 2018 Yuzhao Hong
+﻿/* Copyright 2018 Yuzhao Hong
  */
 #include "framework_base.h"
 
@@ -6,6 +6,7 @@
  */
 number_block* framework::generate_block() {
     return new number_block(difficulty, true, column/2, row);
+    
 }
 
 /* 合并操作
@@ -21,13 +22,15 @@ void framework::merge_block() {
     int x = moving_block->get_x();
     int y = moving_block->get_y();
     int new_number = moving_block->get_number();
+    if (y == 7)
+        y -= 1;
     int dx[] = {-1, 0, 1}, dy[] = {0, -1, 0};
     // 枚举左下右三个格子
     for (int i = 0; i < 3; i++) {
         int nx = x + dx[i];
         int ny = y + dy[i];
         // 判断格子是否合法以及是否能和移动块合并
-        if (!is_crossed(nx, ny) && !is_blank(nx, ny) &&
+        if (is_crossed(nx, ny) && !is_blank(nx, ny) &&
                 !is_uncombined(nx, ny) && is_same_number(x, y, nx, ny)) {
             // 数字翻倍并合并
             new_number *= 2;
@@ -79,21 +82,30 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
     {
         return ;
     }
-    
     moving_block = pNumBlock;
+    unsigned int x = pNumBlock->get_x();
+    unsigned int y = pNumBlock->get_y()-1;
+    pNumBlock->modify_y(6);
+    this->game_blocks[x][y].is_none = false;
+    this->game_blocks[x][y].is_uncombined = false;
+    this->game_blocks[x][y].block = pNumBlock;
 }
 
 void framework::printGameBoard() {
+    system("cls");
     for(int y = row - 1; y >= 0; y--) {
         for(int x = 0; x < column; x++) {
+            /*
             if (is_blank(x, y)) {
-                printf("    ");
+                printf("0");
             } else if (is_uncombined(x, y)) {
-                printf("   #");
-            } else {
-                printf("%4d", game_blocks[x][y].block->get_number());
+                printf("1");
+            } */if(!is_blank(x, y) && game_blocks[x][y].block!=NULL) {
+                printf("%d %d %d | ", game_blocks[x][y].block->get_number(),x,y);
             }
-            printf(" ");
+            else
+                printf("%d %d %d | ", 0, x, y);
+            //printf(" ");
         }
         printf("\n");
     }

@@ -31,6 +31,8 @@ bool framework::is_generate()
 {
     unsigned int current_x = this->moving_block->get_x();
     unsigned int current_y = this->moving_block->get_y();
+    if(current_y == 0)
+        return true;
     if (this->game_blocks[current_x][current_y - 1].is_none)
         return false;
     merge();
@@ -69,6 +71,8 @@ void framework::control(unsigned char control_flag)
 {
     unsigned int current_x = this->moving_block->get_x();
     unsigned int current_y = this->moving_block->get_y();
+    if (current_x == 1)
+        return;
     switch (control_flag)
     {
     case 75://方向左
@@ -107,24 +111,32 @@ void framework::control(unsigned char control_flag)
 
     case 80://方向下
     {
+        printGameBoard();
         int tmp = 0;
         if (current_y == 0)
         {
             return;
         }
+        printGameBoard();
         if (!this->game_blocks[current_x][current_y-1].is_none || this->game_blocks[current_x][current_y-1].is_uncombined)
         {
             return;
         }
+        printGameBoard();
         while (!this->game_blocks[current_x][tmp].is_none)
         {
             tmp++;
         }
         this->game_blocks[current_x][tmp].is_none = false;
+        printGameBoard();
         this->game_blocks[current_x][tmp].is_uncombined = false;
+        printGameBoard();
         this->game_blocks[current_x][tmp].block = this->moving_block;
-        this->game_blocks[current_x][current_y].is_none = true;
+        printGameBoard();
+        if(current_y < 7)
+            this->game_blocks[current_x][current_y].is_none = true;
         this->moving_block->modify_y(tmp);
+        printGameBoard();
     }
     break;
 
@@ -187,15 +199,24 @@ void framework::Start()
             this->game_blocks[x][y].is_uncombined = false;
         }
     }
+    for (int x = 0; x < this->column; x++)//初始化
+    {
+        for (int y = 0; y < this->row; y++)
+        {
+            if (!this->game_blocks[x][y].is_none)
+                std::cout << "failed!";
+        }
+    }
     setMovingBlock(generate_block());
+    printGameBoard();
     std::thread mv(std::bind(&framework::key_control, this));
-    std::thread td(std::bind(&framework::time_drop, this));
+    //std::thread td(std::bind(&framework::time_drop, this));
     while (!end_judge())
     {
        if(this->is_generate())
            setMovingBlock(generate_block());
     }
     mv.detach();
-    td.detach();
+    //td.detach();
 }
 #endif
