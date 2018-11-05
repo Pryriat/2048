@@ -44,8 +44,13 @@ void framework::merge_block() {
 void framework::place_new_block() {
     int x = moving_block->get_x();
     int y = moving_block->get_y();
+    if (y == 0)
+    {
+        game_blocks[x][y].is_none = false;
+        game_blocks[x][y].block = moving_block;
+    }
     // 判断移动块是否下落一个
-    if (!is_crossed(x, y - 1) && is_blank(x, y - 1)) {
+    else if (!is_crossed(x, y - 1) && is_blank(x, y - 1)) {
         moving_block->modify_y(y - 1);
         game_blocks[x][y-1].is_none = false;
         game_blocks[x][y-1].block = moving_block;
@@ -94,15 +99,16 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
 void framework::printGameBoard() {
     //while (this->lock_stream.test_and_set());
     system("cls");
-    for (int x = 0; x < column; x++) {
+    
         for(int y = row - 1; y >= 0; y--) {
+            for (int x = 0; x < column; x++) {
             /*
             if (is_blank(x, y)) {
                 printf("0");
             } else if (is_uncombined(x, y)) {
                 printf("1");
-            } */if (!is_blank(x, y) && this->game_blocks[y][x].block != NULL) {
-                printf("%d %d %d | ", this->game_blocks[y][x].block->get_number(), x, y);
+            } */if (!is_blank(x, y) && this->game_blocks[x][y].block != NULL) {
+                printf("%d %d %d | ", this->game_blocks[x][y].block->get_number(), x, y);
             }
             else if (!is_blank(x, y))
     printf("%c %d %d", '!', x, y);

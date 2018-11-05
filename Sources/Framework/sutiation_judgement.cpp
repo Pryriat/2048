@@ -130,7 +130,7 @@ void framework::control(unsigned char control_flag)
         printGameBoard();
         this->game_blocks[current_x][tmp].is_uncombined = false;
         printGameBoard();
-
+        merge();
     }
     break;
 
