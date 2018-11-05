@@ -1,5 +1,4 @@
-﻿#define Linux
-/* Copyright 2018 Yuzhao Hong
+﻿/* Copyright 2018 Yuzhao Hong
  */
 #include "framework_base.h"
 

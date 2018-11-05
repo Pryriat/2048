@@ -1,3 +1,4 @@
+#define Linux
 /*
 @autor zhangab
 */

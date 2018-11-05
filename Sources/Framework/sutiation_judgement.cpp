@@ -1,5 +1,4 @@
-﻿#define Linux
-/*
+﻿/*
 Author:Chernobyl
 Date:2018/10/19
 Ver:Alpha
