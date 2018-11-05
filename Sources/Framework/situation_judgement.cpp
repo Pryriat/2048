@@ -92,6 +92,7 @@ bool framework::end_judge()//游戏结束判断
         if (!is_generate())//如果合并后游戏结束，释放锁并返回true
         {
             this->lock_stream.clear();
+            this->is_end = true;
             return true;
         }
             
@@ -103,6 +104,8 @@ bool framework::end_judge()//游戏结束判断
 void framework::control(unsigned char control_flag)
 {
     while (this->lock_stream.test_and_set());//获取锁
+    if (this->is_end)
+        return;
     unsigned int current_x = this->moving_block->get_x();
     unsigned int current_y = this->moving_block->get_y();
     std::cout << (char)(control_flag) << std::endl;
@@ -204,6 +207,8 @@ void framework::time_drop()//随时间下落函数，单独线程执行
     while (1)
     {
         while (this->lock_stream.test_and_set());//获取锁
+        if (this->is_end)
+            return;
         unsigned int current_x = this->moving_block->get_x();
         unsigned int current_y = this->moving_block->get_y();
         if (current_y == 0)//如果触底，返回继续循环
@@ -253,6 +258,7 @@ void framework::Start()
     {
          for(int y = 0; y < this->ROW; y++)
         {
+            this->game_blocks[x][y].block = NULL;
             this->game_blocks[x][y].is_none = true;
             this->game_blocks[x][y].is_uncombined = false;
         }
@@ -261,9 +267,10 @@ void framework::Start()
     printGameBoard();//输出界面
     std::thread mv(std::bind(&framework::key_control, this));//载入监听方向键的线程
     std::thread td(std::bind(&framework::time_drop, this));
-    while (!end_judge());//循环条件为游戏未结束
-    mv.detach();//游戏结束，退出线程
+    mv.detach();//允许线程在后台允许，不需等待返回
     td.detach();
+    while (!end_judge());//循环条件为游戏未结束
+    End();
 #ifdef Windows
     system("pause");
 #endif
@@ -271,6 +278,19 @@ void framework::Start()
     system("echo end...");
     getchar();
 #endif
+    return;
+}
+
+void framework::End()
+{
+    for (int x = 0; x < this->COLUMN; x++)
+    {
+        for (int y = 0; y < this->ROW; y++)
+        {
+            if (this->game_blocks[x][y].block != NULL)//释放动态分配内存
+                delete(this->game_blocks[x][y].block);
+        }
+    }
     return;
 }
 #endif
