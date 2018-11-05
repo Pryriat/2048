@@ -96,30 +96,44 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
     this->game_blocks[x][y].block = pNumBlock;
 }
 
-void framework::printGameBoard() {//99-125 用于debug的输出函数，输出信息为数字块,横坐标,纵坐标 Chernobyl
-    //while (this->lock_stream.test_and_set());
+void framework::printGameBoard() {
+#ifdef Windows
     system("cls");
-    
-        for(int y = ROW - 1; y >= 0; y--) {
-            for (int x = 0; x < COLUMN; x++) {
-            /*
+#endif
+#ifdef Linux
+    system("clear");
+#endif
+    for(int y = ROW - 1; y >= 0; y--) {
+        prinSeperationLine();
+        printf("|");
+        for(int x = 0; x < COLUMN; x++) {
             if (is_blank(x, y)) {
-                printf("0");
+                printf("    ");
             } else if (is_uncombined(x, y)) {
-                printf("1");
-            } */if (!is_blank(x, y) && this->game_blocks[x][y].block != NULL) {
-                printf("%d %d %d | ", this->game_blocks[x][y].block->get_number(), x, y);
+                printf("   #");
+            } else {
+                printf("%4d", game_blocks[x][y].block->get_number());
             }
-            else if (!is_blank(x, y))
-    printf("%c %d %d", '!', x, y);
-            else
-                printf("%d %d %d | ", 0, x, y);
-            //printf(" ");
+            printf("|");
         }
         printf("\n");
-
     }
-    printf("mvoing x,y:%d, %d\n", this->moving_block->get_x(), this->moving_block->get_y());
-    //this->lock_stream.clear();
-    return;
+    prinSeperationLine();
+}
+
+void framework::prinSeperationLine() {
+    for(int i = 0; i < COLUMN; i++) {
+        for(int j = 0; j < 5; j++) {
+            printf("-");
+        }
+    }
+    printf("-\n");
+}
+
+bool framework::cannotDrop() {
+    unsigned int x = moving_block->get_x();
+    unsigned int y = moving_block->get_y();
+    if(y == 0 || !is_blank(x, y - 1))
+        return true;
+    return false;
 }

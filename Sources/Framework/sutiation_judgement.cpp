@@ -9,18 +9,55 @@ Ver:Alpha
 
 #include"framework_base.h"
 #include<thread>
+
+#ifdef Windows
 #include<conio.h>
 #include<windows.h>
+#endif
+
+#ifdef Linux
+#include <unistd.h>
+#include <termios.h>
+char getch(){
+    char buf=0;
+    struct termios old={0};
+    fflush(stdout);
+    if(tcgetattr(0, &old)<0)
+        perror("tcsetattr()");
+    old.c_lflag&=~ICANON;
+    old.c_lflag&=~ECHO;
+    old.c_cc[VMIN]=1;
+    old.c_cc[VTIME]=0;
+    if(tcsetattr(0, TCSANOW, &old)<0)
+        perror("tcsetattr ICANON");
+    if(read(0,&buf,1)<0)
+        perror("read()");
+    old.c_lflag|=ICANON;
+    old.c_lflag|=ECHO;
+    if(tcsetattr(0, TCSADRAIN, &old)<0)
+        perror ("tcsetattr ~ICANON");
+    printf("%c\n",buf);
+    return buf;
+}
+#endif
+
 void framework::key_control()//键盘控制主函数
 {
     int input = 0;//获取键盘输入
     while (1)
     {
+#ifdef Windows
         if (_kbhit())//敲击键盘
         {
             if (_getch() == 224)//获取方向键特殊字符
                 control(_getch());
         }
+#endif
+
+#ifdef Linux
+        if (getch() == 224)//获取方向键特殊字符
+            control(getch());
+#endif
     }
     return;
 }
@@ -172,7 +209,13 @@ void framework::time_drop()//随时间下落函数，单独线程执行
         this->game_blocks[current_x][current_y - 1].block = this->moving_block;
         printGameBoard();
         this->lock_stream.clear();
+#ifdef Windows
         Sleep(1000);//延时1s
+#endif
+#ifdef Linux
+        system("sleep 1");
+#endif
+
     }
 }
 
@@ -203,7 +246,12 @@ void framework::Start()
     while (!end_judge());//循环条件为游戏未结束
     mv.detach();//游戏结束，退出线程
     td.detach();
+#ifdef Windows
     system("pause");
+#endif
+#ifdef Linux
+    getchar();
+#endif
     return;
 }
 #endif

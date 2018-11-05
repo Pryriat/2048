@@ -42,4 +42,6 @@ private:
     bool is_uncombined(int x, int y);
     bool is_same_number(int x, int y, int nx, int ny);
     void set_block_blank(int x, int y);
+    void prinSeperationLine();
+    bool cannotDrop();
 };

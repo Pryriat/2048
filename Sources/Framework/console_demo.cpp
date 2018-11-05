@@ -1,4 +1,5 @@
-﻿#include"framework_base.h"
+﻿#define Linux
+#include"framework_base.h"
 int main()
 {
     framework fr(1);
