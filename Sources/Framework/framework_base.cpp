@@ -5,7 +5,7 @@
 /* 生成数字块
  */
 number_block* framework::generate_block() {
-    return new number_block(difficulty, true, column/2, row);
+    return new number_block(difficulty, true, COLUMN/2, ROW);
     
 }
 
@@ -61,7 +61,7 @@ void framework::place_new_block() {
 }
 
 bool framework::is_crossed(int x, int y) {
-    return 0 <= x && x < column && 0 <= y && y < row;
+    return 0 <= x && x < COLUMN && 0 <= y && y < ROW;
 }
 
 bool framework::is_blank(int x, int y) {
@@ -100,8 +100,8 @@ void framework::printGameBoard() {//99-125 用于debug的输出函数，输出�
     //while (this->lock_stream.test_and_set());
     system("cls");
     
-        for(int y = row - 1; y >= 0; y--) {
-            for (int x = 0; x < column; x++) {
+        for(int y = ROW - 1; y >= 0; y--) {
+            for (int x = 0; x < COLUMN; x++) {
             /*
             if (is_blank(x, y)) {
                 printf("0");

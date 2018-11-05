@@ -91,7 +91,7 @@ void framework::control(unsigned char control_flag)
 
     case 77://方向右
     {
-        if (current_x == this->column - 1)//右边界判断
+        if (current_x == this->COLUMN - 1)//右边界判断
         {
             this->lock_stream.clear();//释放锁
             return;
@@ -188,9 +188,9 @@ framework_block_item* framework::current_status()
 
 void framework::Start()
 {//游戏流程函数
-    for(int x = 0; x < this->column; x++)//初始化，将所有块的属性赋初始值
+    for(int x = 0; x < this->COLUMN; x++)//初始化，将所有块的属性赋初始值
     {
-         for(int y = 0; y < this->row; y++)
+         for(int y = 0; y < this->ROW; y++)
         {
             this->game_blocks[x][y].is_none = true;
             this->game_blocks[x][y].is_uncombined = false;

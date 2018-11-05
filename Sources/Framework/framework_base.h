@@ -30,10 +30,10 @@ public:
 
 private:
     unsigned int difficulty;
-    const static unsigned int row = 7;
-    const static unsigned int column = 5;
+    const static unsigned int ROW = 7;
+    const static unsigned int COLUMN = 5;
     unsigned int mark = 0;
-    framework_block_item game_blocks[column][row];
+    framework_block_item game_blocks[COLUMN][ROW];
 
     void merge_block();
     void place_new_block();
