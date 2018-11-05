@@ -214,7 +214,7 @@ void framework::time_drop()//随时间下落函数，单独线程执行
         Sleep(1000);//延时1s
 #endif
 #ifdef Linux
-        system("sleep 1");
+        system("sleep 0.1");
 #endif
     }
 }
@@ -250,6 +250,7 @@ void framework::Start()
     system("pause");
 #endif
 #ifdef Linux
+    system("echo end...");
     getchar();
 #endif
     return;

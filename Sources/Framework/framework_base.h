@@ -35,7 +35,7 @@ private:
     unsigned int mark = 0;
     framework_block_item game_blocks[COLUMN][ROW];
 
-    void merge_block();
+    bool merge_block();
     void place_new_block();
     bool is_crossed(int x, int y);
     bool is_blank(int x, int y);

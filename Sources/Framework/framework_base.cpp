@@ -15,16 +15,18 @@ number_block* framework::generate_block() {
  * 然后放置一个新的数字块
  */
 void framework::merge() {
-    merge_block();
-    place_new_block();
+    bool flag = true;
+    while(flag) {
+        flag = merge_block();
+        place_new_block();
+    }
 }
 
-void framework::merge_block() {
+bool framework::merge_block() {
+    bool flag = false;
     int x = moving_block->get_x();
     int y = moving_block->get_y();
     int new_number = moving_block->get_number();
-    if (y == 7)
-        y -= 1;
     int dx[] = {-1, 0, 1}, dy[] = {0, -1, 0};
     // 枚举左下右三个格子
     for (int i = 0; i < 3; i++) {
@@ -34,12 +36,14 @@ void framework::merge_block() {
         if (!is_crossed(nx, ny) && !is_blank(nx, ny) &&
                 !is_uncombined(nx, ny) && is_same_number(x, y, nx, ny)) {
             // 数字翻倍并合并
+            flag = true;
             new_number *= 2;
             set_block_blank(nx, ny);
         }
     }
     set_block_blank(x, y);
     moving_block->modify_number(new_number);
+    return flag;
 }
 
 void framework::place_new_block() {
