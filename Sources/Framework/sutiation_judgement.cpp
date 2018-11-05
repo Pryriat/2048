@@ -55,8 +55,7 @@ void framework::key_control()//键盘控制主函数
 #endif
 
 #ifdef Linux
-        if (getch() == 224)//获取方向键特殊字符
-            control(getch());
+        control(getch());
 #endif
     }
     return;
@@ -102,9 +101,15 @@ void framework::control(unsigned char control_flag)
     while (this->lock_stream.test_and_set());//获取锁
     unsigned int current_x = this->moving_block->get_x();
     unsigned int current_y = this->moving_block->get_y();
+    std::cout << (char)(control_flag) << std::endl;
     switch (control_flag)
     {
+#ifdef Windows
     case 75://方向左
+#endif
+#ifdef Linux
+    case 'a'://方向左
+#endif
     {
         if (current_x == 0)
         {//边界判断
@@ -126,7 +131,12 @@ void framework::control(unsigned char control_flag)
     }
     break;
 
+#ifdef Windows
     case 77://方向右
+#endif
+#ifdef Linux
+    case 'd'://方向右
+#endif
     {
         if (current_x == this->COLUMN - 1)//右边界判断
         {
@@ -146,7 +156,12 @@ void framework::control(unsigned char control_flag)
     }
     break;
 
+#ifdef Windows
     case 80://方向下
+#endif
+#ifdef Linux
+    case 's'://方向下
+#endif
     {
         unsigned int tmp = 0;
         if (current_y == 0)//触底判断
@@ -213,7 +228,7 @@ void framework::time_drop()//随时间下落函数，单独线程执行
         Sleep(1000);//延时1s
 #endif
 #ifdef Linux
-        system("sleep 0.1");
+        system("sleep 1");
 #endif
     }
 }
