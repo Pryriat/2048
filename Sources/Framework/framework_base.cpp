@@ -131,15 +131,6 @@ void framework::prinSeperationLine() {
     printf("---\n");
 }
 
-bool framework::cannotDrop() {
-    unsigned int x = moving_block->get_x();
-    unsigned int y = moving_block->get_y();
-    if(y == 0 || !is_blank(x, y - 1))
-        return true;
-    return false;
-}
-
-
 void framework::addColumnNumber() {
     printf("  ");
     for(int i = 0; i < COLUMN; i++) {

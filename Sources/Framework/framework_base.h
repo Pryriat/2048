@@ -21,9 +21,11 @@ public:
     void time_drop();//随时间自动下落
     unsigned int return_mark();//返回得分
     framework_block_item* current_status();//返回游戏方块数组指针
+
     number_block* generate_block(); // 生成数字块
     void merge(); // 合并
     void printGameBoard(); // 输出游戏局面
+
 	//Han
     void setMovingBlock(number_block * pNumBlock);  //  修改类内成员变量moving_block
 
@@ -37,12 +39,11 @@ private:
 
     bool merge_block();
     void place_new_block();
-    bool is_crossed(int x, int y);
-    bool is_blank(int x, int y);
-    bool is_uncombined(int x, int y);
-    bool is_same_number(int x, int y, int nx, int ny);
-    void set_block_blank(int x, int y);
-    void prinSeperationLine();
-    bool cannotDrop();
-    void addColumnNumber();
+    bool is_crossed(int x, int y);  // 判断是否越界
+    bool is_blank(int x, int y);  // 判断是否为空白块
+    bool is_uncombined(int x, int y);  // 判断是否为障碍块
+    bool is_same_number(int x, int y, int nx, int ny);  // 判断两个块是否具有相同数字
+    void set_block_blank(int x, int y);  // 将某一位置设置为空白块
+    void prinSeperationLine();  // 输出分隔线
+    void addColumnNumber();  // 添加列号
 };
