@@ -81,7 +81,11 @@ bool framework::end_judge()//游戏结束判断
     unsigned int x = this->moving_block->get_x();
     unsigned int y = this->moving_block->get_y();
     if (y == 0)
+    {
+        merge();//触底时调用合并方法
         is_generate();//移动方块触底，进入生成新方块函数
+    }
+        
     else if (!this->game_blocks[x][y - 1].is_none)//方块落到其他方块上
     {
         this->merge();//调用合并函数
@@ -184,7 +188,7 @@ void framework::control(unsigned char control_flag)
         this->game_blocks[current_x][tmp].is_none = false;
         this->game_blocks[current_x][tmp].is_uncombined = false;
         printGameBoard();
-        merge();//按下下键比触底或与其他方块邻接，调用合并函数
+        merge();//按下下键触底或与其他方块邻接，调用合并函数
     }
     break;
 

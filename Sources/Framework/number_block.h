@@ -1,4 +1,4 @@
-#define Linux
+﻿#define Windows
 /*
 @autor zhangab
 */
