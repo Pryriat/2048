@@ -60,7 +60,7 @@ bool framework::is_crossed(int x, int y) {
 }
 
 bool framework::is_blank(int x, int y) {
-    return game_blocks[x][y].is_none == true;
+    return this->game_blocks[x][y].is_none == true;
 }
 
 bool framework::is_uncombined(int x, int y) {
@@ -92,21 +92,28 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
 }
 
 void framework::printGameBoard() {
+    //while (this->lock_stream.test_and_set());
     system("cls");
-    for(int y = row - 1; y >= 0; y--) {
-        for(int x = 0; x < column; x++) {
+    for (int x = 0; x < column; x++) {
+        for(int y = row - 1; y >= 0; y--) {
             /*
             if (is_blank(x, y)) {
                 printf("0");
             } else if (is_uncombined(x, y)) {
                 printf("1");
-            } */if(!is_blank(x, y) && game_blocks[x][y].block!=NULL) {
-                printf("%d %d %d | ", game_blocks[x][y].block->get_number(),x,y);
+            } */if (!is_blank(x, y) && this->game_blocks[y][x].block != NULL) {
+                printf("%d %d %d | ", this->game_blocks[y][x].block->get_number(), x, y);
             }
+            else if (!is_blank(x, y))
+    printf("%c %d %d", '!', x, y);
             else
                 printf("%d %d %d | ", 0, x, y);
             //printf(" ");
         }
         printf("\n");
+
     }
+    printf("mvoing x,y:%d, %d\n", this->moving_block->get_x(), this->moving_block->get_y());
+    //this->lock_stream.clear();
+    return;
 }
