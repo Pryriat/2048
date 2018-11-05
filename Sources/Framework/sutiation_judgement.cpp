@@ -18,10 +18,8 @@ void framework::key_control()
     {
         if (_kbhit())
         {
-            while (this->lock_stream.test_and_set());
             if (_getch() == 224)
                 control(_getch());
-            this->lock_stream.clear();
         }
     }
     return;
@@ -29,46 +27,41 @@ void framework::key_control()
 
 bool framework::is_generate()
 {
-    unsigned int current_x = this->moving_block->get_x();
-    unsigned int current_y = this->moving_block->get_y();
-    if(current_y == 0)
-        return true;
-    if (this->game_blocks[current_x][current_y - 1].is_none)
-        return false;
-    merge();
+    if(this->moving_block->get_y() == 0)
+        setMovingBlock(generate_block());
+    else
+    {
+        for (int x = 0; x < 5; x++)
+            if (!this->game_blocks[x][6].is_none && !this->game_blocks[x][5].is_none)
+                return false;
+        setMovingBlock(generate_block());
+    }
     return true;
 }
 bool framework::end_judge()
 {
-    unsigned int current_x = this->moving_block->get_x();
-    unsigned int current_y = this->moving_block->get_y();
-
-    //超出上界判断
-    if ((this->game_blocks[current_x][current_y - 1].is_none == false) && current_y == this->row - 1)
+    while (this->lock_stream.test_and_set());
+    unsigned int x = this->moving_block->get_x();
+    unsigned int y = this->moving_block->get_y();
+    if (y == 0)
+        is_generate();
+    else if (!this->game_blocks[x][y - 1].is_none)
     {
-        return true;
-    }
-
-    //填满空格判断
-    for (current_x = 0; current_x < this->column; ++current_x)
-    {
-        for (current_y = 0; current_y < this->row; ++current_y)
+        this->merge();
+        if (!is_generate())
         {
-            if (game_blocks[current_x][current_y].is_none)
-            {
-                return false;
-            }
+            this->lock_stream.clear();
+            return true;
         }
+            
     }
-    if (current_x == this->column && current_y == this->row)
-    {
-        return true;
-    }
+    this->lock_stream.clear();
     return false;
 }
 
 void framework::control(unsigned char control_flag)
 {
+    while (this->lock_stream.test_and_set());
     unsigned int current_x = this->moving_block->get_x();
     unsigned int current_y = this->moving_block->get_y();
     if (current_x == 1)
@@ -112,7 +105,7 @@ void framework::control(unsigned char control_flag)
     case 80://方向下
     {
         printGameBoard();
-        int tmp = 0;
+        unsigned int tmp = 0;
         if (current_y == 0)
         {
             return;
@@ -127,16 +120,17 @@ void framework::control(unsigned char control_flag)
         {
             tmp++;
         }
+        this->game_blocks[current_x][current_y].is_none = true;
+        this->game_blocks[current_x][current_y].block = NULL;
+        this->moving_block->modify_y(tmp);
+        printGameBoard();
+        this->game_blocks[current_x][tmp].block = this->moving_block;
+        printGameBoard();
         this->game_blocks[current_x][tmp].is_none = false;
         printGameBoard();
         this->game_blocks[current_x][tmp].is_uncombined = false;
         printGameBoard();
-        this->game_blocks[current_x][tmp].block = this->moving_block;
-        printGameBoard();
-        if(current_y < 7)
-            this->game_blocks[current_x][current_y].is_none = true;
-        this->moving_block->modify_y(tmp);
-        printGameBoard();
+
     }
     break;
 
@@ -145,6 +139,7 @@ void framework::control(unsigned char control_flag)
     }
     system("cls");
     printGameBoard();
+    this->lock_stream.clear();
     return;
 }
 
@@ -211,11 +206,7 @@ void framework::Start()
     printGameBoard();
     std::thread mv(std::bind(&framework::key_control, this));
     //std::thread td(std::bind(&framework::time_drop, this));
-    while (!end_judge())
-    {
-       if(this->is_generate())
-           setMovingBlock(generate_block());
-    }
+    while (!end_judge());
     mv.detach();
     //td.detach();
 }
