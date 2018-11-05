@@ -33,7 +33,7 @@ private:
     const static unsigned int row = 7;
     const static unsigned int column = 5;
     unsigned int mark = 0;
-    framework_block_item game_blocks[row][column];
+    framework_block_item game_blocks[column][row];
 
     void merge_block();
     void place_new_block();
