@@ -1,4 +1,5 @@
-﻿/*
+﻿#define Linux
+/*
 Author:Chernobyl
 Date:2018/10/19
 Ver:Alpha
@@ -215,7 +216,6 @@ void framework::time_drop()//随时间下落函数，单独线程执行
 #ifdef Linux
         system("sleep 1");
 #endif
-
     }
 }
 
