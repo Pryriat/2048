@@ -131,6 +131,7 @@ void framework::control(unsigned char control_flag)
         }
 
         game_blocks[current_x][current_y].is_none = true;
+        game_blocks[current_x][current_y].block = NULL;
         game_blocks[current_x-1][current_y].is_none = false;
         game_blocks[current_x-1][current_y].block = this->moving_block;
         this->moving_block->modify_x(current_x-1);
@@ -156,6 +157,7 @@ void framework::control(unsigned char control_flag)
             return;
         }
         this->game_blocks[current_x][current_y].is_none = true;
+        this->game_blocks[current_x][current_y].block = NULL;
         this->game_blocks[current_x+1][current_y].is_none = false;
         this->game_blocks[current_x+1][current_y].block = this->moving_block;
         this->moving_block->modify_x(current_x+1);
@@ -186,6 +188,7 @@ void framework::control(unsigned char control_flag)
             tmp++;
         }
         this->game_blocks[current_x][current_y].is_none = true;
+        this->game_blocks[current_x][current_y].block = NULL;
         this->moving_block->modify_y(tmp);
         this->game_blocks[current_x][tmp].block = this->moving_block;
         this->game_blocks[current_x][tmp].is_none = false;
@@ -228,6 +231,7 @@ void framework::time_drop()//随时间下落函数，单独线程执行
         }
         this->moving_block->modify_y(current_y - 1);
         this->game_blocks[current_x][current_y].is_none = true;
+        this->game_blocks[current_x][current_y].block = NULL;
         this->game_blocks[current_x][current_y - 1].is_none = false;
         this->game_blocks[current_x][current_y - 1].is_uncombined = false;
         this->game_blocks[current_x][current_y - 1].block = this->moving_block;
@@ -288,9 +292,13 @@ void framework::End()
         for (int y = 0; y < this->ROW; y++)
         {
             if (this->game_blocks[x][y].block != NULL)//释放动态分配内存
-                delete(this->game_blocks[x][y].block);
+            {
+                delete this->game_blocks[x][y].block;
+                this->game_blocks[x][y].block = NULL;
+            }
         }
     }
+    
     return;
 }
 #endif
