@@ -30,7 +30,7 @@ public:
 
 	//Han
     void setMovingBlock(number_block * pNumBlock);  //  修改类内成员变量moving_block
-
+	void setMarkZero();     //用于重置游戏，将分数置0
 
 private:
     unsigned int difficulty;

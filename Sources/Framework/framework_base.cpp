@@ -5,7 +5,7 @@
 /* 生成数字块
  */
 number_block* framework::generate_block() {
-    return new number_block(difficulty, true, COLUMN/2, ROW);
+    return new number_block(difficulty, true, COLUMN/2, ROW-1);   //Nov 8th: 将ROW改为 ROW-1 By Han
     
 }
 
@@ -88,8 +88,8 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
     }
     moving_block = pNumBlock;
     unsigned int x = pNumBlock->get_x();
-    unsigned int y = pNumBlock->get_y()-1;
-    pNumBlock->modify_y(6);
+    unsigned int y = pNumBlock->get_y();    //Nov.8th: 将此处的get_y()-1改为get_y() by.Han
+    //pNumBlock->modify_y(6);               //Nov.8th: 将此处的y值修改代码注释掉
     this->game_blocks[x][y].is_none = false;
     this->game_blocks[x][y].is_uncombined = false;
     this->game_blocks[x][y].block = pNumBlock;
@@ -137,4 +137,9 @@ void framework::addColumnNumber() {
         printf("    %d", i);
     }
     printf("\n");
+}
+
+void framework::setMarkZero()   // Han 用于重置游戏，将分数置0
+{
+    mark = 0;
 }
