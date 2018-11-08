@@ -298,7 +298,7 @@ void framework::End()
             }
         }
     }
-    
+    this->mark = 0;
     return;
 }
 #endif
