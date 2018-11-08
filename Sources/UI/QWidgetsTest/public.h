@@ -1,6 +1,7 @@
 #ifndef PUBLIC_H
 #define PUBLIC_H
 
+#include <atomic>
 #include <QTextCodec>
 #include <QTime>
 #include <QSplashScreen>
@@ -31,7 +32,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-typedef enum blockShape{ en_0 = 1,
+typedef enum blockShape{ en_empty,
                          en_2,
                          en_4,
                          en_8,
@@ -43,6 +44,20 @@ typedef enum blockShape{ en_0 = 1,
                          en_512,
                          en_1024,
                          en_2048,
-                         en_DIY} blockShape;
+                         en_4096} blockShape;
+
+//棋盘位置坐标
+#define DE_BOARD_XPOS 80
+#define DE_BOARD_YPOS 20
+
+//棋盘行列长度宏定义
+#define DE_BOARD_ROW 7
+#define DE_BOARD_COLUMN 5
+
+//难度宏定义
+#define DE_DIFFICULITY 1
+
+//方块像素长度
+#define DE_BLOCKLENGTH 60
 
 #endif // PUBLIC_H

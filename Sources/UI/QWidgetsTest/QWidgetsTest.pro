@@ -7,14 +7,19 @@ QT += multimedia
 CONFIG += c++11
 
 SOURCES += \
-    block.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    framework_base.cpp \
+    sutiation_judgement.cpp \
+    board.cpp \
+    block.cpp
 
 HEADERS += \
-    block.h \
     mainwindow.h \
-    public.h
+    public.h \
+    framework_base.h \
+    number_block.h \
+    board.h
 
 RESOURCES += \
     myqrc.qrc

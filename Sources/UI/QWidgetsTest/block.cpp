@@ -1,158 +1,95 @@
-#include "block.h"
+#include "board.h"
+#include "number_block.h"
+#include "framework_base.h"
 
 QRectF block::boundingRect() const
 {
     qreal penwidth = 1;
-    return QRectF(-25-penwidth/2,-25-penwidth/2,
-                  50+penwidth,50+penwidth);
+    return QRectF(0-penwidth/2,
+                  0-penwidth/2,
+                  DE_BLOCKLENGTH+penwidth,
+                  DE_BLOCKLENGTH+penwidth);
 }
 
-void block::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void block::paint(QPainter *painter,
+                  const QStyleOptionGraphicsItem *option,
+                  QWidget *widget)
 {
-    // 为小方块使用贴图
-    painter->drawPixmap(-25, -25, 75, 75, QPixmap(":/images/block.png"));
-    painter->setBrush(brushcolor);
-    QColor penColor = brushcolor;
-
-    // 将颜色的透明度减小
-    penColor.setAlpha(220);
-    painter->setPen(penColor);
-    painter->drawRect(-25, -25, 75, 75);
-}
-
-
-board::board()
-{
-    setFlags(QGraphicsItem::ItemIsFocusable);
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(moveOneStep()));
-    curShape = en_DIY;
-}
-
-QRectF board::boundingRect() const
-{
-    qreal penwidth = 1;
-    return QRectF(-25-penwidth/2,-25-penwidth/2,
-                  75+penwidth,75+penwidth);
-}
-
-void board::clearBlock()
-{
-    qDebug() << "Func:clearBlock hit" <<endl;
-}
-
-void board::createBlock(const QPointF &point,blockShape shape)
-{
-    static const QColor colorTable[13] = {
-        QColor(190, 190, 190, 100),     //0:Grey
-        QColor(135, 205, 235, 100),     //2:SkyBlue
-        QColor(100, 150, 235, 100),     //4:CornflowerBlue
-        QColor(150, 250, 150, 100),     //8:PaleGreen
-        QColor(50, 205, 50, 100),       //16:LimeGreen
-        QColor(165, 42, 42, 100),       //32:Brown
-        QColor(255, 99, 71, 100),       //64:Tomato
-        QColor(255, 211, 155, 100),     //128:Burlywood1
-        QColor(238, 197, 145, 100),     //256:Burlywood2
-        QColor(205, 170, 125, 100),     //512:Burlywood3
-        QColor(255, 165, 79, 100),      //1024:Tan1
-        QColor(255, 215, 0, 100),       //2048:Gold
-        QColor(255, 215, 0, 100)        //DIY:Gold
-    };
-    int shapeID = shape;
-    QColor color;
-
-    if(shape == en_DIY)
+    switch(shape)
     {
-        shapeID = qrand()%13;
-    }
-    color = colorTable[shapeID];
-    curShape = shape;
-
-    block *pBlock = new block(color);
-    pBlock->setPos(-25,-25);
-
-    if(isColliding())
+    case en_2:
     {
-        stopTimer();
-        emit gameFinished();
-    }
-    setPos(point);
-}
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_2.png"));
+    }break;
 
-bool board::isColliding()
-{
-    QList<QGraphicsItem *> itemList = childItems();
-    QGraphicsItem *item;
-    foreach (item, itemList) {
-        if(item->collidingItems().count() > 1)
-            return true;
-    }
-    return false;
-}
-
-blockShape board::getBlockShape()
-{
-    return curShape;
-}
-
-void board::keyPressEvent(QKeyEvent *event)
-{
-    switch (event->key())
+    case en_4:
     {
-    case Qt::Key_Down :
-        moveBy(0, 60);
-        if (isColliding()) {
-            moveBy(0, -60);
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_4.png"));
+    }break;
 
-
-            //clearBlock();
-
-
-            emit needNewBlock();
-        }
-        break;
-
-    case Qt::Key_Left :
-        moveBy(-60, 0);
-        if (isColliding())
-            moveBy(60, 0);
-        break;
-
-    case Qt::Key_Right :
-        moveBy(60, 0);
-        if (isColliding())
-            moveBy(-60, 0);
-        break;
-
-    case Qt::Key_Space :
-        moveBy(0, 60);
-        while (!isColliding()) {
-            moveBy(0, 60);
-        }
-        moveBy(0, -60);
-        //clearBlock();
-        emit needNewBlock();
-        break;
-    }
-}
-
-void board::startTimer(int interval)
-{
-    timer->start(interval);
-}
-
-void board::moveOneStep()
-{
-    moveBy(0, 60);
-    if (isColliding())
+    case en_8:
     {
-        moveBy(0, -60);
-        //clearBlock();
-        emit needNewBlock();
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_8.png"));
+    }break;
+
+    case en_16:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_16.png"));
+    }break;
+
+    case en_32:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_32.png"));
+    }break;
+
+    case en_64:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_64.png"));
+    }break;
+
+    case en_128:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_128.png"));
+    }break;
+
+    case en_256:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_256.png"));
+    }break;
+
+    case en_512:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_512.png"));
+    }break;
+
+    case en_1024:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_1024.png"));
+    }break;
+
+    case en_2048:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_2048.png"));
+    }break;
+
+    case en_4096:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_4096.png"));
+    }break;
+
+    default:
+    {
+        painter->drawPixmap(0, 0, DE_BLOCKLENGTH, DE_BLOCKLENGTH, QPixmap(":/images/block_Empty.png"));
+    }
     }
 }
 
-void board::stopTimer()
+blockShape block::getShape()   //获取当前方块的类型
 {
-    timer->stop();
+    return this->shape;
+}
+
+void block::setShape(blockShape _shape)    //设置当前方块类型
+{
+    shape = _shape;
 }

@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include "public.h"
-#include "block.h"
+#include "number_block.h"
+#include "framework_base.h"
+#include "board.h"
 #include <QMainWindow>
 #include <QGraphicsView>
 
@@ -18,26 +20,28 @@ protected:
 
 public slots:
     void startGame();
-    void clearFullRows();
-    void moveBox();
+    bool end_judge();
+    void blockDrop();
     void gameOver();
     void restartGame();
-    void finishGame();
+    void gameExit();
     void pauseGame();
     void returnGame();
 
 private:
     board *pBoard;
     board *nextBoard;
+
     QGraphicsLineItem *topLine;
     QGraphicsLineItem *bottomLine;
     QGraphicsLineItem *leftLine;
     QGraphicsLineItem *rightLine;
+
     qreal gameSpeed;
     QList<int> rows;
     void initView();
     void initGame();
-    void updateScore(const int fullRowNum = 0);
+    void updateScore();
 
     QGraphicsTextItem *gameScoreText;
     QGraphicsTextItem *gameLevelText;
