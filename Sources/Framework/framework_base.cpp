@@ -57,6 +57,7 @@ void framework::place_new_block() {
         game_blocks[x][y].is_none = false;
         game_blocks[x][y].block = moving_block;
     }
+    mark += moving_block->get_number();
 }
 
 bool framework::is_crossed(int x, int y) {
