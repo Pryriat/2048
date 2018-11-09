@@ -18,6 +18,8 @@ void framework::merge() {
     while(flag) {
         flag = merge_block();
         place_new_block();
+        if(flag)
+            updateMark();
     }
 }
 
@@ -57,6 +59,9 @@ void framework::place_new_block() {
         game_blocks[x][y].is_none = false;
         game_blocks[x][y].block = moving_block;
     }
+}
+
+void framework::updateMark() {
     mark += moving_block->get_number();
 }
 
