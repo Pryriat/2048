@@ -39,8 +39,9 @@ private:
     unsigned int mark = 0;
     framework_block_item game_blocks[COLUMN][ROW];
 
-    bool merge_block();
-    void place_new_block();
+    bool merge_block();  // 进行“合并”块，这里加双引号的原因是有可能只有一个块进行自我“合并”
+    void place_new_block();  // 放置“合并”后的块
+    void updateMark();  // 更新分数
     bool is_crossed(int x, int y);  // 判断是否越界
     bool is_blank(int x, int y);  // 判断是否为空白块
     bool is_uncombined(int x, int y);  // 判断是否为障碍块
