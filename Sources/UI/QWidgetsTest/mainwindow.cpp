@@ -60,13 +60,13 @@ void MainWindow::initView()
     // 得分文本
     gameScoreText = new QGraphicsTextItem();
     scene->addItem(gameScoreText);
-    gameScoreText->setFont(QFont("Times", 10, QFont::Bold));
+    gameScoreText->setFont(QFont("幼圆", 10, QFont::Bold));
     gameScoreText->setPos(400, 20);
 
     // 级别文本
     gameLevelText = new QGraphicsTextItem();
     scene->addItem(gameLevelText);
-    gameLevelText->setFont(QFont("Times", 30, QFont::Bold));
+    gameLevelText->setFont(QFont("幼圆", 30, QFont::Bold));
     gameLevelText->setPos(20, 150);
 
     //原框架中的画线代码，暂不需要
@@ -84,12 +84,13 @@ void MainWindow::initView()
     // 黑色遮罩
     QWidget *mask = new QWidget;
     mask->setAutoFillBackground(true);
-    mask->setPalette(QPalette(QColor(0, 0, 0, 0)));
-    mask->resize(700, 500);
+    mask->setPalette(QPalette(QColor(0, 0, 0, 150)));
+    mask->resize(660,460);
     maskWidget = scene->addWidget(mask);
-    maskWidget->setPos(-50, -50);
+    maskWidget->setPos(0, 0);
     // 设置其Z值为1，这样可以处于Z值为0的图形项上面
     maskWidget->setZValue(1);
+    maskWidget->hide();
 
 
     // 选项面板
@@ -155,7 +156,7 @@ void MainWindow::initView()
     gameWelcomeText = new QGraphicsTextItem();
     scene->addItem(gameWelcomeText);
     gameWelcomeText->setHtml(QString::fromLocal8Bit("<font color=black>C++轮子队出品</font>"));
-    gameWelcomeText->setFont(QFont("Consolas", 5, QFont::Normal));   //QFont("Times", 30, QFont::Bold)
+    gameWelcomeText->setFont(QFont("幼圆", 5, QFont::Normal));   //QFont("Times", 30, QFont::Bold)
     gameWelcomeText->setPos(20, 430);
     gameWelcomeText->setZValue(2);
 
@@ -164,7 +165,7 @@ void MainWindow::initView()
     gamePausedText = new QGraphicsTextItem();
     scene->addItem(gamePausedText);
     gamePausedText->setHtml(QString::fromLocal8Bit("<font color=red>PAUSING</font>"));
-    gamePausedText->setFont(QFont("Times", 15, QFont::Bold));
+    gamePausedText->setFont(QFont("幼圆", 15, QFont::Bold));
     gamePausedText->setPos(171, 100);
     gamePausedText->setZValue(2);
     gamePausedText->hide();
@@ -174,8 +175,8 @@ void MainWindow::initView()
     gameOverText = new QGraphicsTextItem();
     scene->addItem(gameOverText);
     gameOverText->setHtml(QString::fromLocal8Bit("<font color=white>GameOver</font>"));
-    gameOverText->setFont(QFont("Times", 30, QFont::Bold));
-    gameOverText->setPos(320, 100);
+    gameOverText->setFont(QFont("幼圆", 30, QFont::Bold));
+    gameOverText->setPos(197, 100);
     gameOverText->setZValue(2);
     gameOverText->hide();
 
@@ -403,6 +404,8 @@ bool MainWindow::end_judge()
     unsigned int x = pFramework->moving_block->get_x();
     unsigned int y = pFramework->moving_block->get_y();
 
+    updateScore();  //更新得分
+
     if(0 == y)
     {
         pFramework->merge();    //触底即调用合并方法
@@ -428,33 +431,13 @@ bool MainWindow::end_judge()
 void MainWindow::blockDrop()
 {
     //qDebug()<<"Func:blockDrop hits!"<<endl;
-
-    /*
-    // 从位置最靠上的满行开始
-    for (int i = rows.count(); i > 0;  --i) {
-        int row = rows.at(i - 1);
-        Qt::SortOrder order;
-        foreach (QGraphicsItem *item, scene()->items(199, 49, 202, row - 47, Qt::ContainsItemShape,order,QTransform()))
-        {
-            item->moveBy(0, 60);
-        }
-    }
-    // 更新分数
-    updateScore(rows.count());
-    // 将满行列表清空为0
-    rows.clear();
-    // 新的方块
-    pBoard->createBlock(nextBoard->getBlockShape());
-    nextBoard->clearBlock();
-    nextBoard->createBlock();
-    */
-
-    //qDebug()<<"Func:blockDrop hits!"<<endl;
     framework *pFramework = pBoard->getFrameworkPtr();
     framework_block_item *pBlocks = pFramework->current_status();
 
     unsigned int current_x = pFramework->moving_block->get_x();
     unsigned int current_y = pFramework->moving_block->get_y();
+
+    qDebug()<<"Func:blockDrop hit!"<<endl;
 
     if(pFramework->is_end == true)
     {//此局游戏结束
@@ -462,25 +445,35 @@ void MainWindow::blockDrop()
     }
 
     if( 0 == current_y                                   //若触底则不执行
-        || !pFramework->moving_block->get_is_moving()    //移动块因某种原因处于未移动状态，则下落不执行
-        || !pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_none) //方块下接触到其他方块，则下落不执行
+        || !pFramework->moving_block->get_is_moving())   //移动块因某种原因处于未移动状态，则下落不执行
     {
-        qDebug()<<"is_none():" <<pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_none<<endl;
         qDebug()<<"current_x: "<<current_x<<endl;
         qDebug()<<"current_y: "<<current_y<<endl;
+        qDebug()<<"!is_moving():"<<!pFramework->moving_block->get_is_moving()<<endl;
         qDebug()<<"Func:blockDrop() error hits!"<<endl;
+        return ;
+
+    }
+
+    else if(!pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_none)//方块下接触到其他方块，则下落不执行
+    {
+        emit pBoard->boardChange();
         return;
     }
 
-    //正常下落：    
-    pFramework->moving_block->modify_y(current_y - 1);
-    pBlocks[current_x * DE_BOARD_ROW + current_y].is_none = true;
-    pBlocks[current_x * DE_BOARD_ROW + current_y].block = nullptr;
-    pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_none = false;
-    pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_uncombined = false;
-    pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].block = pFramework->moving_block;
+    else
+    {
+        //正常下落：
+        pFramework->moving_block->modify_y(current_y - 1);
+        pBlocks[current_x * DE_BOARD_ROW + current_y].is_none = true;
+        pBlocks[current_x * DE_BOARD_ROW + current_y].block = nullptr;
+        pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_none = false;
+        pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_uncombined = false;
+        pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].block = pFramework->moving_block;
 
-    qDebug()<<"Func:blockDrop() normal drop hits!"<<endl;
+        //qDebug()<<"Func:blockDrop() normal drop hits!"<<endl;
+    }
+
 
     //画图
     pBoard->paintBoard(QPoint(DE_BOARD_XPOS,DE_BOARD_YPOS));
@@ -531,8 +524,11 @@ void MainWindow::gameOver()
     showMenuButton->hide();
     maskWidget->show();
     gameOverText->show();
-    restartButton->setPos(370, 200);
+    restartButton->setPos(280, 200);
+
+    finishButton->setPos(280,250);
     finishButton->show();
+
 
     pBoard->clearBlock();
     pBoard->hide();
@@ -546,8 +542,11 @@ void MainWindow::gameOver()
             pBlock[times].block = nullptr;
          }
     }
-    pBoard->getFrameworkPtr()->setMarkZero();   //分数置0
 
+    // 此处添加计分板相关函数
+
+    pBoard->getFrameworkPtr()->setMarkZero();   //分数置0
+    pBoard->getFrameworkPtr()->is_end = false;
 }
 
 // 重新开始游戏
@@ -588,7 +587,7 @@ void MainWindow::restartGame()
          }
     }
     pBoard->getFrameworkPtr()->setMarkZero();   //分数置0
-
+    pBoard->getFrameworkPtr()->is_end = false;  //结束标志位置为false
     initGame();
 }
 
@@ -604,6 +603,7 @@ void MainWindow::gameExit()
     showMenuButton->hide();
     gameScoreText->hide();
     gameLevelText->hide();
+    maskWidget->hide();
 
     //原框架中的画线代码，暂不需要
     /*

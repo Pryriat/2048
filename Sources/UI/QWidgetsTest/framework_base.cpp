@@ -1,7 +1,7 @@
 /* Copyright 2018 Yuzhao Hong
  */
 #include "framework_base.h"
-#include "public.h"
+
 /* 生成数字块
  */
 number_block* framework::generate_block() {
@@ -18,6 +18,8 @@ void framework::merge() {
     while(flag) {
         flag = merge_block();
         place_new_block();
+        if(flag)
+            updateMark();
     }
 }
 
@@ -57,6 +59,10 @@ void framework::place_new_block() {
         game_blocks[x][y].is_none = false;
         game_blocks[x][y].block = moving_block;
     }
+}
+
+void framework::updateMark() {
+    mark += moving_block->get_number();
 }
 
 bool framework::is_crossed(int x, int y) {
