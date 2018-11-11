@@ -50,6 +50,10 @@ typedef enum blockShape{ en_empty,
 #define DE_BOARD_XPOS 80
 #define DE_BOARD_YPOS 20
 
+//下一块方块的坐标
+#define DE_NEXT_XPOS 525
+#define DE_NEXT_YPOS 20
+
 //棋盘行列长度宏定义
 #define DE_BOARD_ROW 7
 #define DE_BOARD_COLUMN 5
@@ -59,5 +63,6 @@ typedef enum blockShape{ en_empty,
 
 //方块像素长度
 #define DE_BLOCKLENGTH 60
+
 
 #endif // PUBLIC_H

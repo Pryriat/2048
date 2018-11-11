@@ -50,6 +50,7 @@ void MainWindow::initView()
 
     // 当前方块和提示方块
     pBoard = new board();   //当前方块
+    pBoard->getFrameworkPtr()->is_end = true;  //将当前游戏状态置为非游戏状态
     connect(pBoard, SIGNAL(boardChange()), this, SLOT(end_judge()));
     connect(pBoard, SIGNAL(gameFinished()), this, SLOT(gameOver()));
     connect(pBoard->getTimer(), SIGNAL(timeout()), this, SLOT(blockDrop()));   //将计时器信号与自由下落函数连接，用于驱动方块自由下落
@@ -320,6 +321,7 @@ void MainWindow::initGame()
     //棋盘类及框架类初始化
     framework *ptr_framework = pBoard->getFrameworkPtr();
     framework_block_item *pBlock = pBoard->getFrameworkPtr()->current_status();
+    ptr_framework->is_end = false;   //将游戏状态置为游戏中
     for(int x = 0; x < 5; ++x)
     {
         for(int y = 0; y < 7; ++y)
@@ -330,7 +332,10 @@ void MainWindow::initGame()
             pBlock++;
         }
     }
+
     ptr_framework->setMovingBlock(ptr_framework->generate_block());
+    ptr_framework->genNextBlock();
+
     pBoard->paintBoard(QPointF(DE_BOARD_XPOS,DE_BOARD_YPOS));
 
     backgroundMusic->setMedia(QUrl::fromLocalFile(SOUNDPATH + "background01.mp3"));
@@ -358,45 +363,10 @@ bool MainWindow::end_judge()
 {
     qDebug()<<"Func:end_judge hits!"<<endl;
 
-    /*
-    // 获取比一行方格较大的矩形中包含的所有小方块
-        for (int y = 429; y > 50; y -= 20) {
-            Qt::SortOrder order;
-            QList<QGraphicsItem *> list =scene()->items(199, y, 202, 22, Qt::ContainsItemShape, order,QTransform());
-            //QList<QGraphicsItem *> list = scene()->items(199, y, 202, 22, Qt::ContainsItemShape);
-            // 如果该行已满
-            if (list.count() == 10) {
-                foreach (QGraphicsItem *item, list) {
-                    block *pBlock = (block *) item;
-
-                    //动画效果
-                    QGraphicsBlurEffect *blurEffect = new QGraphicsBlurEffect;
-                    pBlock->setGraphicsEffect(blurEffect);
-                    QPropertyAnimation *animation = new QPropertyAnimation(pBlock, "scale");
-                    animation->setEasingCurve(QEasingCurve::OutBounce);
-                    animation->setDuration(250);
-                    animation->setStartValue(4);
-                    animation->setEndValue(0.25);
-                    animation->start(QAbstractAnimation::DeleteWhenStopped);
-                    connect(animation, SIGNAL(finished()), pBlock, SLOT(deleteLater()));
-                    //box->deleteLater();
-                }
-                // 保存满行的位置
-                rows << y;
-            }
-        }
-        // 如果有满行，下移满行上面的各行再出现新的方块组
-        // 如果没有满行，则直接出现新的方块组
-        if(rows.count() > 0) {
-            clearRowSound->play();
-            moveBox();
-        } else {
-            pBoard->createBlock(nextBoard->getBlockShape());
-            // 清空并销毁提示方块组中的所有小方块
-            nextBoard->clearBlock();
-            nextBoard->createBlock();
-        }
-    */
+    if(pBoard->getFrameworkPtr()->is_end == true)   //游戏已结束时则不进行任何操作并返回true
+    {
+        return true;
+    }
 
     framework *pFramework = pBoard->getFrameworkPtr();
     framework_block_item *pBlock = pFramework->current_status();
@@ -430,20 +400,18 @@ bool MainWindow::end_judge()
 // 下移满行上面的所有小方块
 void MainWindow::blockDrop()
 {
-    //qDebug()<<"Func:blockDrop hits!"<<endl;
     framework *pFramework = pBoard->getFrameworkPtr();
     framework_block_item *pBlocks = pFramework->current_status();
 
     unsigned int current_x = pFramework->moving_block->get_x();
     unsigned int current_y = pFramework->moving_block->get_y();
 
-    qDebug()<<"Func:blockDrop hit!"<<endl;
-
     if(pFramework->is_end == true)
     {//此局游戏结束
         return;
     }
 
+    qDebug()<<"Func:blockDrop hits!"<<endl;
     if( 0 == current_y                                   //若触底则不执行
         || !pFramework->moving_block->get_is_moving())   //移动块因某种原因处于未移动状态，则下落不执行
     {
@@ -470,8 +438,6 @@ void MainWindow::blockDrop()
         pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_none = false;
         pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].is_uncombined = false;
         pBlocks[current_x * DE_BOARD_ROW + (current_y - 1)].block = pFramework->moving_block;
-
-        //qDebug()<<"Func:blockDrop() normal drop hits!"<<endl;
     }
 
 
@@ -487,37 +453,60 @@ void MainWindow::updateScore()
 { 
     qDebug()<<"Func:updateScore hits!"<<endl;
 
+    if(pBoard->getFrameworkPtr()->is_end == true)   //若在非游戏状态则不操作
+    {
+        return;
+    }
+
     framework *pFramework = pBoard->getFrameworkPtr();
     unsigned int score = pFramework->return_mark();
     unsigned int currentScore = gameScoreText->toPlainText().toUInt();
     currentScore = score;
     gameScoreText->setHtml(QString::fromLocal8Bit("<font color=red>%1</font>").arg(currentScore));
 
+    /*
     if (currentScore < 500)
     {   //积分于0-500操作
 
     }
     else if (currentScore < 1000)
     {   //积分于500-1000操作
-        /*
-        //原框架此处为壁纸更换操作，现注释取消
-        gameLevelText->setHtml(QString::fromLocal8Bit("<font color=white>No.2</font>"));
-        scene()->setBackgroundBrush(QPixmap(":/images/background02.png"));
-        gameSpeed = 300;
-        pBoard->stopTimer();
-        pBoard->startTimer(gameSpeed);
-        */
+
     }
     else
-    {
-        // 添加下一个级别的设置
-    }
+    {  // 添加下一个级别的设置
+    }*/
+
 }
 
-
+// 当前的一局游戏结束
 void MainWindow::gameOver()
 {
     qDebug()<<"Func:gameOver hits!"<<endl;
+
+
+    framework *ptr_framework = pBoard->getFrameworkPtr();
+    framework_block_item *pBlock = ptr_framework->current_status();
+
+    //框架类该局游戏结束时的参数配置
+    ptr_framework->setMarkZero();   //分数置0
+    ptr_framework->is_end = true;
+    delete ptr_framework->next_block;
+    ptr_framework->next_block = nullptr;
+
+
+    //框架类数组置空
+    for(int times = 0; times < 5*7; ++times)
+    {
+        if(pBlock[times].block != nullptr)
+        {
+            delete pBlock[times].block;
+            pBlock[times].block = nullptr;
+        }
+    }
+
+    pBoard->clearBlock();
+    pBoard->hide();
 
     // 游戏结束
     pauseButton->hide();
@@ -525,28 +514,13 @@ void MainWindow::gameOver()
     maskWidget->show();
     gameOverText->show();
     restartButton->setPos(280, 200);
-
+    restartButton->show();
     finishButton->setPos(280,250);
     finishButton->show();
 
 
-    pBoard->clearBlock();
-    pBoard->hide();
-    //框架类数组置空
-    framework_block_item *pBlock = pBoard->getFrameworkPtr()->current_status();
-    for(int times = 0; times < 5*7; ++times)
-    {
-        if(pBlock[times].block != nullptr)
-        {
-            delete pBlock[times].block;
-            pBlock[times].block = nullptr;
-         }
-    }
-
     // 此处添加计分板相关函数
 
-    pBoard->getFrameworkPtr()->setMarkZero();   //分数置0
-    pBoard->getFrameworkPtr()->is_end = false;
 }
 
 // 重新开始游戏
@@ -560,21 +534,9 @@ void MainWindow::restartGame()
     restartButton->setPos(510, 150);
 
     // 销毁提示方块组和当前方块移动区域中的所有方块
-    //nextBoard->clearBlock();
     pBoard->clearBlock();
     pBoard->hide();
 
-    /*
-    Qt::SortOrder order;
-    foreach (QGraphicsItem *item, scene()->items(199, 49, 202, 402, Qt::ContainsItemShape,order,QTransform()))
-    {
-        // 先从场景中移除小方块，因为使用deleteLater()是在返回主事件循环后才销毁
-        // 小方块的，为了在出现新的方块组时不发生碰撞，所以需要先从场景中移除小方块
-        scene()->removeItem(item);
-        block *box = (block *) item;
-        box->deleteLater();
-    }
-    */
 
     //框架类数组置空
     framework_block_item *pBlock = pBoard->getFrameworkPtr()->current_status();
@@ -588,6 +550,9 @@ void MainWindow::restartGame()
     }
     pBoard->getFrameworkPtr()->setMarkZero();   //分数置0
     pBoard->getFrameworkPtr()->is_end = false;  //结束标志位置为false
+    delete pBoard->getFrameworkPtr()->next_block;
+    pBoard->getFrameworkPtr()->next_block = nullptr;
+
     initGame();
 }
 
@@ -613,23 +578,11 @@ void MainWindow::gameExit()
     rightLine->hide();
     */
 
-    /*
-    nextBoard->clearBlock();
-    pBoard->clearBlock();
-    pBoard->hide();
-
-    Qt::SortOrder order;
-    foreach (QGraphicsItem *item, scene()->items(199, 49, 202, 402, Qt::ContainsItemShape,order,QTransform())) {
-        block *pblock = (block *) item;
-        pblock->deleteLater();
-    }
-    */
 
     pBoard->clearBlock();
     pBoard->hide();
 
     // 在进行游戏时按下“主菜单”按钮
-    maskWidget->show();
     gameWelcomeText->show();
     startButton->show();
     scoreBoardButton->show();
@@ -671,12 +624,12 @@ void MainWindow::returnGame()
 // 如果正在进行游戏，当键盘按下时总是方块组获得焦点
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    //qDebug()<<"Func:MainWindow::keyPressEvent hits!"<<endl;
-    if (pauseButton->isVisible())
+    qDebug()<<"Func:MainWindow::keyPressEvent hits!"<<endl;
+    /*if (pauseButton->isVisible())
         pBoard->setFocus();
     else
         pBoard->clearFocus();
-
+    */
     pBoard->keyPressEvent(event);
 }
 

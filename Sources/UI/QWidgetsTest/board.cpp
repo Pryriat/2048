@@ -10,39 +10,6 @@ board::board()
     pFramework = new framework(DE_DIFFICULITY);  //框架类构造，难度暂调整为1(GL_DIFFICULITY)
 }
 
-void board::displayBoard()
-{
-
-    framework_block_item *pItem = pFramework->current_status();
-    blockShape shape = en_empty;
-    block *pBlock = nullptr;
-    for(int r = 0; r < 7; ++r)
-    {
-       for(int c = 0; c < 5; ++c)
-       {
-           if(pItem[c].is_none == false)
-           {
-               if(pItem[c].is_uncombined == false)  //数值块
-               {
-                   shape = numToShape(pItem[c].block->get_number());
-               }
-               else //障碍块
-               {
-                   shape = en_empty;
-               }
-
-               pBlock = new block(shape);
-               addToGroup(pBlock);
-               pBlock->setPos(c * DE_BLOCKLENGTH,
-                              (7 - r) * DE_BLOCKLENGTH);
-           }
-
-       }
-       ++pItem; //调至下一行
-    }
-
-}
-
 void board::setCurBlock(block *pBlock)      //设置当前控制方块图形类指针curBlock
 {
     if(pBlock == nullptr)
@@ -216,6 +183,8 @@ int board::shapeToNum(blockShape shape) //方块类型转换为数字
 
 void board::clearBlock()
 {
+    qDebug() << "Func:clearBlock hit" <<endl;
+
     //原界面清空
     QList<QGraphicsItem *> itemList = childItems();
     QGraphicsItem *item;
@@ -223,10 +192,9 @@ void board::clearBlock()
     foreach (item, itemList)
     {
         removeFromGroup(item);
-        OneBlock = dynamic_cast<block *>(item);
+        OneBlock = (block *)item;
         OneBlock->deleteLater();
     }
-    qDebug() << "Func:clearBlock hit" <<endl;
 }
 
 void board::createBlock(blockShape _shape)  //根据指定的位置point和类型shape生成方块，并显示于界面中
@@ -256,19 +224,6 @@ void board::createBlock(blockShape _shape)  //根据指定的位置point和类�
 
 }
 
-bool board::isColliding()
-{
-    /*
-    QList<QGraphicsItem *> itemList = childItems();
-    QGraphicsItem *item;
-    foreach (item, itemList) {
-        if(item->collidingItems().count() > 1)
-            return true;
-    }
-    return false;*/
-    return false;
-}
-
 blockShape board::getBlockShape()
 {
     return curBlock->getShape();
@@ -276,27 +231,21 @@ blockShape board::getBlockShape()
 
 void board::keyPressEvent(QKeyEvent *event)
 {
-    //qDebug()<<"Func:board::keyPressEvent hits!"<<endl;
-
     unsigned int tmp;
     unsigned int current_x = pFramework->moving_block->get_x();
     unsigned int current_y = pFramework->moving_block->get_y();
     framework_block_item *pBlock = pFramework->current_status();
+
+    if(pFramework->is_end == true)  //游戏结束则不相应
+    {
+        return;
+    }
+    qDebug()<<"Func:board::keyPressEvent hits!"<<endl;
+
     switch (event->key())
     {
     case Qt::Key_Down :
     {
-        /*
-        pFramework->control(80);
-        curBlock->moveBy(0, 60);
-        qDebug()<<"Key_Down hits"<<endl;
-        if (isColliding()) {
-            curBlock->moveBy(0, -60);
-
-            //clearBlock();
-
-            emit needNewBlock();
-        }*/
         tmp = 0;
         if(0 == current_y)
         {//触底判断
@@ -327,12 +276,6 @@ void board::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_Left :
     {
-        /*
-        pFramework->control(75);
-        curBlock->moveBy(-60, 0);
-        if (isColliding())
-            curBlock->moveBy(60, 0);
-        */
         if(0 == current_x)
         {//边界判断
             return;
@@ -354,12 +297,6 @@ void board::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_Right :
     {
-        /*
-        pFramework->control(77);
-        curBlock->moveBy(60, 0);
-        if (isColliding())
-            curBlock->moveBy(-60, 0);
-        */
         if(current_x == 5 - 1)
         {//右边界判断
             return;
@@ -387,18 +324,6 @@ void board::startTimer(int interval)
     timer->start(interval);
 }
 
-void board::moveOneStep()
-{
-    qDebug()<<"Func:moveOneStep hits"<<endl;
-    curBlock->moveBy(0, 60);
-    if (isColliding())
-    {
-        curBlock->moveBy(0, -60);
-        //clearBlock();
-        emit needNewBlock();
-    }
-}
-
 void board::stopTimer()
 {
     timer->stop();
@@ -406,6 +331,10 @@ void board::stopTimer()
 
 void board::paintBoard(const QPointF &BoardPos)  //画面刷新
 {
+    if(pFramework->is_end == true)  //游戏结束则不响应
+    {
+        return;
+    }
     hide();
     //原界面清空
     QList<QGraphicsItem *> itemList = childItems();
@@ -443,6 +372,14 @@ void board::paintBoard(const QPointF &BoardPos)  //画面刷新
             addToGroup(OneBlock);
         }
     }
+
+    //下一个方块的显示
+    bShape = numToShape(pFramework->next_block->get_number());
+    OneBlock = new block(bShape);
+    OneBlock->setPos(DE_NEXT_XPOS,DE_NEXT_YPOS);    //方块位置设置
+    addToGroup(OneBlock);
+
+
     qDebug()<<"paintBoard all block addToGroup finished!"<<endl;
     show();
 }

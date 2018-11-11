@@ -95,7 +95,7 @@ void framework::setMovingBlock(number_block *pNumBlock) //Han  修改类内成�
     moving_block = pNumBlock;
     unsigned int x = pNumBlock->get_x();
     unsigned int y = pNumBlock->get_y();    //Nov.8th: 将此处的get_y()-1改为get_y() by.Han
-    //pNumBlock->modify_y(6);               //Nov.8th: 将此处的y值修改代码注释掉
+    //pNumBlock->modify_y(6);               //Nov.8th: 将此处的y值修改代码注释掉 by.Han
     this->game_blocks[x][y].is_none = false;
     this->game_blocks[x][y].is_uncombined = false;
     this->game_blocks[x][y].block = pNumBlock;
@@ -148,4 +148,9 @@ void framework::addColumnNumber() {
 void framework::setMarkZero()   // Han 用于重置游戏，将分数置0
 {
     mark = 0;
+}
+
+void framework::genNextBlock()  // Han 用于更新下一块方块
+{
+    next_block = generate_block();
 }

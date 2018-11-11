@@ -3,12 +3,12 @@
 #include <QApplication>
 
 int main(int argc, char *argv[])
-{    
+{
     QApplication app(argc, argv);
 
         QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
 
-        // ÉèÖÃËæ»úÊıµÄ³õÊ¼Öµ
+        // è®¾ç½®éšæœºæ•°çš„åˆå§‹å€¼
         qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
 
         QPixmap pix(":/images/gameLoading.png");
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         splash.resize(pix.size());
         splash.show();
 
-        //ÑÓÊ±
+        //å»¶æ—¶
     #if 1
         int delayTime = 5;
         QElapsedTimer timer;
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
         do{
             now=QDateTime::currentDateTime();
             app.processEvents();
-        } while (n.secsTo(now)<=5); //5ÎªĞèÒªÑÓÊ±µÄÃëÊı
+        } while (n.secsTo(now)<=5); //5ä¸ºéœ€è¦å»¶æ—¶çš„ç§’æ•°
     #endif
         //app.processEvents();
 

@@ -28,7 +28,6 @@ public:
 
     board();
     QRectF boundingRect() const;        //棋盘图形构造
-    void displayBoard();                //将框架中方块阵列以图形的形式映射到屏幕
     void setCurBlock(block *pBlock);    //设置当前控制方块图形类指针curBlock
     void clearBlock();
 
@@ -38,7 +37,6 @@ public:
     blockShape numToShape(unsigned int num);     //数字转换为方块类型
     int shapeToNum(blockShape shape);   //方块类型转换为数字
 
-    bool isColliding(); //碰撞判断
     void createBlock(blockShape _shape = en_empty);  //方块生成构造
 
     blockShape getBlockShape(); //获取当前方块的类型
@@ -59,7 +57,6 @@ signals:
     void gameFinished();
 
 public slots:
-    void moveOneStep();
     void startTimer(int interval);
     void stopTimer();
 

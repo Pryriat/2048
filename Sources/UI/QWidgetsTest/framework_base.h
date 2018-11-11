@@ -12,7 +12,7 @@ typedef struct framework_block_item//框架内每个方块的元素类型
 
 class framework
 {
-public:
+public:     
     number_block* moving_block;
     bool is_end = false;//游戏结束状态
     std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;//多线程修改状态
@@ -32,8 +32,10 @@ public:
     void End();//游戏结束后的资源释放函数
 
     //Han
-    void setMovingBlock(number_block * pNumBlock);  //  修改类内成员变量moving_block
+    number_block* next_block;   //下一个生成方块
+    void setMovingBlock(number_block * pNumBlock);  //修改类内成员变量moving_block
     void setMarkZero();     //用于重置游戏，将分数置0
+    void genNextBlock();    //更新下一个方块
 
 private:
     unsigned int difficulty;
