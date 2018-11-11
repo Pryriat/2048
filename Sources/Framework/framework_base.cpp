@@ -149,3 +149,8 @@ void framework::setMarkZero()   // Han 用于重置游戏，将分数置0
 {
     mark = 0;
 }
+
+void framework::genNextBlock()  // Han 用于更新下一块方块
+{
+    next_block = generate_block();
+}

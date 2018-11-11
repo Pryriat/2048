@@ -29,8 +29,10 @@ public:
     void End();//游戏结束后的资源释放函数
 
 	//Han
-    void setMovingBlock(number_block * pNumBlock);  //  修改类内成员变量moving_block
-	void setMarkZero();     //用于重置游戏，将分数置0
+    number_block* next_block;   //下一个生成方块
+    void setMovingBlock(number_block * pNumBlock);  //修改类内成员变量moving_block
+    void setMarkZero();     //用于重置游戏，将分数置0
+    void genNextBlock();    //更新下一个方块
 
 private:
     unsigned int difficulty;

@@ -64,15 +64,22 @@ void framework::key_control()//键盘控制主函数
 bool framework::is_generate()//判断是否生成新方块
 {
     if(this->moving_block->get_y() == 0)//移动方块触底
-        setMovingBlock(generate_block());//生成新方块
+        //setMovingBlock(generate_block());//生成新方块
+    {
+        //Nov.11th by.han
+        setMovingBlock(next_block);//令当前移动块指针指向下一块新方块
+        next_block = generate_block();//更新下一块新方块
+    }
     else
     {
         for (int x = 0; x < 5; x++)
             if (!this->game_blocks[x][6].is_none && !this->game_blocks[x][5].is_none)//如果某一列第五第六行同时不为空，游戏结束
                 return false;
-        setMovingBlock(generate_block());//否则生成新方块
+        //setMovingBlock(generate_block());//否则生成新方块
+        setMovingBlock(next_block);//令当前移动块指针指向下一块新方块
+        next_block = generate_block();//更新下一块新方块
     }
-    printGameBoard();//生成后重新渲染
+    //printGameBoard();//生成后重新渲染
     return true;
 }
 bool framework::end_judge()//游戏结束判断
@@ -268,7 +275,8 @@ void framework::Start()
         }
     }
     setMovingBlock(generate_block());//生成第一个移动块
-    printGameBoard();//输出界面
+    next_block = generate_block();  //Nov.11th 生成下一个移动块 By.Han
+	printGameBoard();//输出界面
     std::thread mv(std::bind(&framework::key_control, this));//载入监听方向键的线程
     std::thread td(std::bind(&framework::time_drop, this));
     mv.detach();//允许线程在后台允许，不需等待返回
