@@ -51,8 +51,8 @@ typedef enum blockShape{ en_empty,
 #define DE_BOARD_YPOS 20
 
 //下一块方块的坐标
-#define DE_NEXT_XPOS 525
-#define DE_NEXT_YPOS 20
+#define DE_NEXT_XPOS 527
+#define DE_NEXT_YPOS 38
 
 //棋盘行列长度宏定义
 #define DE_BOARD_ROW 7

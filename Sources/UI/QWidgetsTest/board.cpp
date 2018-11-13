@@ -367,8 +367,8 @@ void board::paintBoard(const QPointF &BoardPos)  //画面刷新
                 bShape = numToShape(pBlocks[times].block->get_number());
                 OneBlock = new block(bShape); //数字块图形构造
             }
-            OneBlock->setPos((times/DE_BOARD_ROW)*DE_BLOCKLENGTH + DE_BOARD_XPOS - 1.5,
-                             (DE_BOARD_ROW - times%DE_BOARD_ROW - 1)*DE_BLOCKLENGTH + DE_BOARD_YPOS - 1.5);    //方块位置设置
+            OneBlock->setPos((times/DE_BOARD_ROW)*DE_BLOCKLENGTH + DE_BOARD_XPOS - 2,
+                             (DE_BOARD_ROW - times%DE_BOARD_ROW - 1)*DE_BLOCKLENGTH + DE_BOARD_YPOS);    //方块位置设置
             addToGroup(OneBlock);
         }
     }
